@@ -16,9 +16,9 @@ function getSum(total, num) {
 }
 console.log(arr.reduce(getSum)); // outputs 10
 ```
-_Example from [W3School](https://www.w3schools.com/jsref/jsref_reduce.asp) and [MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/reduce)_
+_Example from [W3School](https://www.w3schools.com/jsref/jsref_reduce.asp){:rel="nofollow noopener noreferrer"}{:target="_blank"} and [MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/reduce){:rel="nofollow noopener noreferrer"}{:target="_blank"}_
 
-The .reduce() method (function that is inside an object in JavaScript), by [definition](https://www.w3schools.com/jsref/jsref_reduce.asp), **is to reduce an array into a single value.**
+The .reduce() method (function that is inside an object in JavaScript), by [definition](https://www.w3schools.com/jsref/jsref_reduce.asp){:rel="nofollow noopener noreferrer"}{:target="_blank"}, **is to reduce an array into a single value.**
 
 ![reduce syntax](https://cdn-images-1.medium.com/max/1600/1*Qp2vpa8B5ZHE0c7SzeFCEw.png)
 
