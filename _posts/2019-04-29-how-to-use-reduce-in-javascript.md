@@ -1,8 +1,10 @@
 ---
-layout: post
-title:  "How to Use .reduce() in JavaScript (1/2)"
-date:   2019-04-29 02:00:00 +0800
+layout:     post
+title:      "How to Use .reduce() in JavaScript (1/2)"
+date:       2019-04-29 02:00:00 +0800
 categories: javascript
+comments:   true
+
 ---
 Looking for a fancier way to add up all the numbers in an array? You might want to give `.reduce()` a try.
 
