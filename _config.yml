@@ -31,6 +31,7 @@ twitter_username: danny_han79
 # Build settings
 markdown: kramdown
 theme: minima
+timezone: Asia/Taipei
 plugins:
   - jekyll-feed
   - jekyll-sitemap
