@@ -1,7 +1,7 @@
 ---
 layout:     post
 title:      "How to Use .reduce() in JavaScript (1/2)"
-date:       2019-04-29 02:00:00 +0800
+date:       2019-04-24 02:00:00 +0800
 categories: javascript
 comments:   true
 
