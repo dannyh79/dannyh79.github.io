@@ -41,7 +41,7 @@ console.log(arr.reduce(getSum));
 
 We call ".reduce()" on an array (_arr_ in example), with our callback `getSum()`. It should print out "10" the number without a problem.
 
-A more thorough guide on **initialValue** and **currentIndex** parameter will be given in [the next part](#).
+A more thorough guide on **initialValue** and **currentIndex** parameter will be given in [the next part]({% post_url 2019-04-29-reduce-in-js2 %}).
 
 ---
 
