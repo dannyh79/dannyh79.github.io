@@ -1,7 +1,7 @@
 ---
 layout:     post
 title:      "How to Use .reduce() in JavaScript (1/2)"
-date:       2019-04-29 02:00:00 +0800
+date:       2019-04-24 02:00:00 +0800
 categories: javascript
 comments:   true
 
@@ -21,6 +21,8 @@ _Example from [W3School](https://www.w3schools.com/jsref/jsref_reduce.asp){:rel=
 The .reduce() method (function that is inside an object in JavaScript), by [definition](https://www.w3schools.com/jsref/jsref_reduce.asp){:rel="nofollow noopener noreferrer"}{:target="_blank"}, **is to reduce an array into a single value.**
 
 ![reduce syntax](/assets/images/reduce-in-js1/1.png)
+Fig. 1; from [MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/reduce){:rel="nofollow noopener noreferrer" target="_blank"}
+{: style="color:gray; font-size: 80%; text-align: center;"}
 
 However, the execution is somewhat less than intuitive (to me, at least) by just looking at the raw code and the doc. Thus comes my version of interpretation on .reduce(). Here in part 1 I am only going through its **callback**, **accumulator**, and **currentValue** parameter, for the sake of simplicity.
 Now, let's dissect the example code into two parts:
@@ -34,6 +36,8 @@ function getSum(total, num) {
 The first part is where we define the **callback** function[¹] (function that gets called after being defined) for later use in .reduce(). Inside of it we have the **accumulator** (_total_ in example), the container that stores the sum of the previous values in each iteration, and **currentValue** (_num_), the number to be added in current cycle. The two works like this when the callback is called in .reduce():
 
 ![reduce iteration](/assets/images/reduce-in-js1/2.png)
+Fig. 2; from [MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/reduce){:rel="nofollow noopener noreferrer" target="_blank"}
+{: style="color:gray; font-size: 80%; text-align: center;"}
 
 ```js
 console.log(arr.reduce(getSum));
@@ -41,7 +45,7 @@ console.log(arr.reduce(getSum));
 
 We call ".reduce()" on an array (_arr_ in example), with our callback `getSum()`. It should print out "10" the number without a problem.
 
-A more thorough guide on **initialValue** and **currentIndex** parameter will be given in [the next part](#).
+A more thorough guide on **initialValue** and **currentIndex** parameter will be given in [the next part]({% post_url 2019-04-29-reduce-in-js2 %}).
 
 ---
 
