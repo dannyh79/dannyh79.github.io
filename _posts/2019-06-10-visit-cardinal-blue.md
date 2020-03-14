@@ -1,0 +1,70 @@
+---
+layout:     post
+title:      "美商凱德諾藍股份有限公司參訪小記"
+date:       2019-06-10 00:00:00 +0800
+categories: misc
+comments:   true
+
+---
+
+（ 5 月 31 日）首先，要感謝 [Astro Camp](https://astro.5xruby.tw/){:rel="nofollow noopener noreferrer" target="_blank"} 及[凱德諾藍股份有限公司](https://cardinalblue.com/){:rel="nofollow noopener noreferrer" target="_blank"}的安排與牽成，讓井底小蛙的我得以一窺頂天。
+
+## 環境介紹 by Sylvie
+Sylvie 帶了我們介紹了辦公室的各處。在一個 200M 的充氣氣球前，她介紹道 PicCollage 已於今年（一月）[¹]的時候已突破兩億的下載量！雖然對這個數據很沒概念，但想到這個數字後面可能的轉換率，就口水直流⋯⋯。有趣的是每個小會議室和個人空間均為以特定藝術家為主題做佈景。科技業的辦公室原來也可以很有人文氣息。
+
+另外印象深刻的是還有公司的工程團隊介紹，聽起來似乎主要有前端、 Server Team ，及 ML （ Machine Learning ）。若能在這邊工作並且參與 Hack Day 的話，感覺一定能接觸到許多舒適圈外有趣的東西。
+
+## PicCollage 團隊介紹 by Jessie & 慶梅
+在簡潔的影片介紹公司的主力產品們後，Jessie 也再次提到了兩億的下載量，和目前產品的 MAU 有一千五百萬人之多。講到這突然分神想到一般塑膠氣球若從一月[¹]用到現在一定已經洩氣了；不管「 200M 」的氣球是否為重複充氣，這一定是對團隊一個非常重要的里程碑。
+
+介紹中也提到了工程師們佔了公司職員有半數之多、如何 ML 如何地被運用在產品上、一大特色 Hack Day ，及公司的核心價值：
+
+> **Always be learning**
+
+> **Live well, work well**
+
+> **Win as a team**
+
+其中本人對於第二項特別有感。部分是凱德諾藍在乎員工的身心健康（績效不是靠壓榨而是維護資產），部分是自己參加 code camp 兩個月，學得還不夠多，肚腩已經大了不少。
+
+
+## Q & A with 慶梅, and Yenting & Maso
+
+Q & A 時間分成兩部分。和凱德諾藍（下稱「公司」）有關、大方向的問題，公司請到了共同創辦人 陳慶梅 慶梅姐做回應；技術層面的問題則是由技術部門的 YenTing 和 Maso 做解答。
+
+學員提出的問題不出以下：公司篩選新進人員的條件、座落不同時區的分公司間該如何合作、公司如何保持同業間領先的地位，及公司策略上的長期規劃。慶梅除了提到公司重視未來員工的技術及經驗外，更重視人格特質。因為公司以信任為本（ trust-based）、重結果產出，員工並無特定的上下班時間。後半段的解答，也再再呼應公司是以信任為本的觀點。如目前海外分部的成員，多為已經在同間辦公室一起工作數年的夥伴等。
+
+學員在針對技術層面的問題，在此節錄「架構 App 時特定技術採用與否的考量點」和「對工程部門新進人員在短中長期發展的期待」。 YenTing 和 Maso 兩位提到，一個技術的採用與否需要考慮到技術背後的社群及生態圈。社群活躍性和自身產品後續的維護難易度有關；而特定資源取得容易與否，則取決於生態圈的走向（如目前要學 ML 大家都會想到拿 Python 來學）。對新進人員的期待則為以下：
+
+- 短期
+  - 熟悉工作流程、協同工作的步調
+  - 知道公司產品的解決方案背後的緣由，並有辦法與 mentor 討論
+  - 能夠分得清楚「已知」和「未知」的區塊（才有辦法獲得 mentor 的回饋）
+
+- 中期
+  - 能夠開始和 mentor 有「對話」。從上對下的「給予指令」的模式，轉變為雙向的討論與溝通
+
+- 長期
+  - 工作：希望能夠獨立作業，並能夠將模糊指令變成解決方案
+  - 個人：選擇一領域繼續深耕；與他人互相學習，除了從他人身上學到不同的東西外也帶大家成長
+
+
+## Demo Day
+再次感謝 [Astro Camp](https://astro.5xruby.tw/){:rel="nofollow noopener noreferrer" target="_blank"} 及[凱德諾藍股份有限公司](https://cardinalblue.com/){:rel="nofollow noopener noreferrer" target="_blank"}的用心安排，讓我有榮幸能夠成為 PicCollage 數週一次 的 Demo Day 座上賓。
+
+在許多的分享中，我印象最深刻的是 Yolung 分享他參加 Google I/O 2019 的所見所聞。其中一項急智演講「 Speechless 」最讓人感到興奮：要求講者對抽到的主題、當著一大堆的聽眾、配上內容極為隨機簡報頁做有意義的簡報（可參 [Speechless @ Google I/O 2016](https://www.youtube.com/watch?v=0R_xJXjwxHA){:rel="nofollow noopener noreferrer" target="_blank"} ）！而 Yolung 在他的主題結語也同樣地發人省思：「小孩子才做選擇」。是的，身為現代人，都應該要抱持著開闊的心胸去接受不一樣的東西。
+> 小孩子才做選擇（ Embrace possibilites ）
+
+其它有趣的主題還有 ML Team 的 Jimmy 與同仁領銜開發的手機 App （一個能夠將人物圖去背後加上不同特效，而且殘影特效還能夠堆疊！），與 Lucy 所分享的、能夠編寫簡報用的檔案的手機 App （類似 WeTransfer 的 [Paste](https://pasteapp.com/){:rel="nofollow noopener noreferrer" target="_blank"} ）⋯⋯。一切的一切都讓我感受到凱德諾藍充滿創意的氛圍，與每個人對自己所關注事情的熱情。
+
+## Networking
+結束後的 Network 時間， YenTing 與我分享到技術層面上可以朝 [T 型](https://en.wikipedia.org/wiki/T-shaped_skills){:rel="nofollow noopener noreferrer" target="_blank"}發展，與一位工程師在架構應用程式時要納入的考量：如多執行緒（如 Java ）與單執行緒（如 Ruby ）、不同類型資料庫的選用、⋯⋯。並且從以上的論述延伸到基本功的訓練，如資料結構、演算法，是必須要再多多加強的領域等。
+
+## 心得
+還是要再感謝 [Astro Camp](https://astro.5xruby.tw/){:rel="nofollow noopener noreferrer" target="_blank"} 及[凱德諾藍股份有限公司](https://cardinalblue.com/){:rel="nofollow noopener noreferrer" target="_blank"}的安排。一次的現場親訪、一個短暫的交流，大勝自己在網路上空盯著公司圖片想像在裡面工作的樣子；當下聽到的一句話、一個頓悟，替自己省下數十個小時在網路上盲人摸象般地摸索未來的方向。日前[泰安](https://taian.su/){:rel="nofollow noopener noreferrer" target="_blank"}老師於課堂上提到的技術的學習上可以朝 T 型發展，今天又再聽到一次，感觸又更加地深刻。
+
+也期許自己在不遠的未來，也能夠像今日所遇到的各位般，能夠帶給他人理性，與感性上的啟發。
+
+---
+
+1. 「今年一月」僅為當日參訪印象所及；若時間上有誤植還請不吝指教
