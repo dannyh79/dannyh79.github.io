@@ -8,5 +8,3 @@ permalink: /about/
 ---
 
 A place where Danny boi keeps his thoughts from slipping away.
-
-_Site is currently under construction_.
