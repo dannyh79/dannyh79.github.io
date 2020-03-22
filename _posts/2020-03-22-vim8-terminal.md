@@ -13,7 +13,7 @@ comments:   true
 - `:terminal` allows you to open terminals inside Vim, hence the potential to as be productive as being in a Tmux session
 - You probably don't need it if you are already using Tmux
 
-## How This is Helpful?
+## How is This Helpful?
 In Vim, prior to this, we can only access the shell through either typing `:!`, to and back from shell with hitting `CTRL + Z` then using `$ fg` , or Tmux.
 
 Now, with the new ternimal mode, combining tabs, we can work wonders with just Vim! In cover photo, I have
