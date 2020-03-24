@@ -45,7 +45,7 @@ nnoremap <silent> <leader>t :vert term<CR>
 - With the setup, you can open a terminal with `<leader> + t`
 - Move among the panes with `CTRL + w + h/j/k/l`
 - Go to terminal Normal mode with `CTRL + w + N` to copy the text;
-- Hit `.` to go back to terminal mode
+- Hit `i` to go back to terminal mode
 - Use Vim's Ex command in terminal pane with `CTRL + w + :`
 - From there, type command `:term` to open another terminal pane below the current pane
 
