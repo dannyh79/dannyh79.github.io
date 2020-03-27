@@ -40,18 +40,19 @@ In Ruby, a (code) block is a piece of code that takes arguments. A block can NOT
 
 ```ruby
 # Two ways to wrap a block in Ruby
-
-# Bad; will cause SyntaxError
+# They will cause errors if put like these
 # 1. { ... }
 { puts 1 } # gets "SyntaxError"
 # 2. do ... end
 do puts 1 end # gets "SyntaxError"
+```
 
+```ruby
 def some_method
   yield
 end
 
-# Good; will not cause SyntaxError
+# Good; these will not cause SyntaxError
 some_method { puts 1 }
 proc_print_one = proc { puts 1 }
 lambda_print_one = lambda { puts 1 }
@@ -60,7 +61,7 @@ lambda_print_one = lambda { puts 1 }
 > Read more about the difference between `proc` and `lambda` in my blog post [Proc & Lambda in Ruby]({% post_url 2019-05-12-ruby-proc-lambda %})!
 
 ## Precedence in Execution
-Per documentation in Ruby-Doc.org, `{ ... }` blocks have priority below all listed operations, but `do ... end` blocks have lower priority.
+Per documentation in Ruby-Doc.org, `{ ... }` blocks have priority below all [listed operations](https://ruby-doc.org/core-2.7.0/doc/syntax/precedence_rdoc.html){:rel="nofollow noopener noreferrer" target="_blank"}, but `do ... end` blocks have even lower priority.
 
 - No difference in terms of output, as all gets executed before printed
 
