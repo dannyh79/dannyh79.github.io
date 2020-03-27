@@ -1,6 +1,6 @@
 ---
 layout:     post
-title:      "Proc & Lambda in Ruby"
+title:      "Proc & Lambda in Ruby"
 date:       2019-05-12 00:00:00 +0800
 categories: ruby
 comments:   true
