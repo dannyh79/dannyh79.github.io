@@ -57,7 +57,7 @@ proc_print_one = proc { puts 1 }
 lambda_print_one = lambda { puts 1 }
 ```
 
-> Read more about the difference between `proc` and `lambda` in my blog post [Proc & Lambda in Ruby](/posts/ruby-proc-lambda)!
+> Read more about the difference between `proc` and `lambda` in my blog post [Proc & Lambda in Ruby]({% post_url 2019-05-12-ruby-proc-lambda %})!
 
 ## Precedence in Execution
 Per documentation in Ruby-Doc.org, `{ ... }` blocks have priority below all listed operations, but `do ... end` blocks have lower priority.
