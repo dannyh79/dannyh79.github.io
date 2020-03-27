@@ -52,6 +52,8 @@ A block, or [closure](https://en.wikipedia.org/wiki/Closure_(computer_programmin
 do puts 1 end # gets "SyntaxError"
 ```
 
+> Do you know there is difference between using `{ ... }` and `do ... end` block? Check out my blog post [Difference between "{}" & "do...end" in Ruby](/posts/ruby-precedence-in-block)!
+
 ## Proc and Lambda
 - [Definition](http://ruby-doc.org/core-2.6.3/Proc.html#class-Proc-label-Lambda+and+non-lambda+semantics){:rel="nofollow noopener noreferrer" target="_blank"} by ruby-doc.org
   > A [procedure object](https://ruby-doc.org/docs/ruby-doc-bundle/UsersGuide/rg/procobjects.html){:rel="nofollow noopener noreferrer" target="_blank"}, or proc, is an encapsulation of a **block (of code)**, which can be stored in a local variable, passed to a method or another proc, and can be called.
