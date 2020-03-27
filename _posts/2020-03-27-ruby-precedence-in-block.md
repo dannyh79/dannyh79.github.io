@@ -36,7 +36,7 @@ end # => ???
 ```
 
 ## What is Block in Ruby
-In Ruby, a (code) block is a piece of code that takes arguments. A block can NOT "survive" on its own, UNLESS it is attached to methods, or in the form of a proc/lambda.
+In Ruby, a (code) block is a piece of code that takes arguments. A block can NOT "survive" on its own, UNLESS it is attached to methods, or in the form of `proc` or `lambda`.
 
 ```ruby
 # Two ways to wrap a block in Ruby
@@ -57,7 +57,7 @@ proc_print_one = proc { puts 1 }
 lambda_print_one = lambda { puts 1 }
 ```
 
-> Read more about the difference between a proc and a lambda in my blog post [Proc & Lambda in Ruby](/posts/ruby-proc-lambda)!
+> Read more about the difference between `proc` and `lambda` in my blog post [Proc & Lambda in Ruby](/posts/ruby-proc-lambda)!
 
 ## Precedence in Execution
 Per documentation in Ruby-Doc.org, `{ ... }` blocks have priority below all listed operations, but `do ... end` blocks have lower priority.
