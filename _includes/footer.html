@@ -16,7 +16,14 @@
             {%- endif -%}
             </li>
             {%- if site.email -%}
-            <li><a class="u-email" href="mailto:{{ site.email }}">{{ site.email }}</a></li>
+            <li>
+              <a class="u-email"
+                 href="mailto:{{ site.email }}"
+                 target="_blank"
+                 rel="nofollow noopener noreferrer">
+                {{ site.email }}
+              </a>
+            </li>
             {%- endif -%}
         </ul>
       </div>
@@ -29,10 +36,20 @@
         <ul class="social-media-list">
           <li>{{- site.description | escape -}}</li>
           <li>
-            &copy; 2020 <a href="https://github.com/dannyh79/">Cheng-Hsuan Han</a>
+            &copy; 2020
+            <a href="https://github.com/dannyh79/"
+               target="_blank"
+               rel="nofollow noopener noreferrer">
+              Cheng-Hsuan Han
+            </a>
           </li>
           <li>
-            License <a href="https://creativecommons.org/licenses/by-nc/4.0/">CC BY-NC 4.0</a>
+            License
+            <a href="https://creativecommons.org/licenses/by-nc/4.0/"
+               target="_blank"
+               rel="nofollow noopener noreferrer">
+              CC BY-NC 4.0
+            </a>
           </li>
         </ul>
       </div>
