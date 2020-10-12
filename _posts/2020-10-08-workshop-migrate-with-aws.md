@@ -6,7 +6,7 @@ categories: ["workshop", "aws"]
 comments:   true
 
 ---
-## TDLR
+## TLDR
 These are notes taken from the workshop that covers the following:
 - Migrate database with AWS DMS (Database Migration Service)
 - Move on-premise or virtual instances onto EC2s with AWS CloudEndure

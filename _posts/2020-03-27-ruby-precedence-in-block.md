@@ -7,7 +7,7 @@ comments:   true
 
 ---
 
-## TDLR
+## TLDR
 - In Ruby, blocks in braces, `{ ... }`, bind stronger than in `do ... end` do
 - Rule of thumb
   1. Use `{ ... }` for single-line blocks

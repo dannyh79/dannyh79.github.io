@@ -8,7 +8,7 @@ comments:   true
 ---
 ![Terminal mode in Vim](/assets/images/vim8-terminal/1.png)
 
-## TDLR
+## TLDR
 - Vim 8.1 introduced terminal mode, `:terminal`
 - `:terminal` allows you to open terminals inside Vim, hence the potential to be as productive as being in a Tmux session
 - You probably don't need it if you are already using Tmux

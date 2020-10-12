@@ -9,7 +9,7 @@ comments:   true
 
 This is my summary for a YouTube series, [Resilient CSS](https://www.youtube.com/watch?v=u00FY9vADfQ&list=PLbSquHt1VCf1kpv9WRGMCA9_Nn4vCLZ9Y){:rel="nofollow noopener noreferrer" target="_blank"}.
 
-## TDLR
+## TLDR
 - Look up the stats of browser usage by region to define your device/browser support
   - Consult [caniuse.com](https://caniuse.com/){:rel="nofollow noopener noreferrer" target="_blank"}, [MDN](https://developer.mozilla.org/en-US/docs/Web/CSS){:rel="nofollow noopener noreferrer" target="_blank"}, [Bugzilla](https://www.bugzilla.org/){:rel="nofollow noopener noreferrer" target="_blank"}, etc.
   - Browser usage can be measured by country in caniuse.com

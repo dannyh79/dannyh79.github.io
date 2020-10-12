@@ -6,7 +6,7 @@ categories: ["react", "react-native", "ios"]
 comments:   true
 
 ---
-## TDLR
+## TLDR
 - ...you need a Mac to do it
 - Install Xcode, Node.js, and Yarn
 - Install Ruby gem `cocoapods`

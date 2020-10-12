@@ -7,7 +7,7 @@ comments:   true
 
 ---
 
-## TDLR
+## TLDR
 - `super` equals `super(*args)`, which brings ALL args to the inherited method
 - `super()`..., is just `super()` that simply invokes the inherited method
 
