@@ -15,7 +15,7 @@ These are notes taken from the workshop that covers the following:
 ## Preface
 These are notes taken from the AWS-hosted event of [Migrate with AWS](https://application-migration-with-aws.workshop.aws/){:rel="nofollow noopener noreferrer" target="_blank"}, which means they are probably not 100% applicable when you choose to run it on your own. The basics, however, like setting up Security Groups (SGs), should be the same.
 
-If you would were to run the workshop, you may use [running the workshop in your own AWS account](https://application-migration-with-aws.workshop.aws/en/intro/on-your-own.html){:rel="nofollow noopener noreferrer" target="_blank"} from Getting Started.
+If you were to run the workshop, you may use [running the workshop in your own AWS account](https://application-migration-with-aws.workshop.aws/en/intro/on-your-own.html){:rel="nofollow noopener noreferrer" target="_blank"} from Getting Started.
 
 ## Lab 1 - Database Migration
 - Write to source database is okay during the migration. :)
