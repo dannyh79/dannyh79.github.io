@@ -1,7 +1,7 @@
 ---
 layout:     post
 title:      "Troubleshooting MySQL 5.7 on Arch Linux"
-date:       2021-09-07 10:31:52 +0800
+date:       2021-11-07 07:03:33 +0800
 categories: ["mysql", "linux"]
 comments:   true
 
