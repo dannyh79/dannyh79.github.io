@@ -4,7 +4,7 @@ title: About
 permalink: /about/
 ---
 
-## 韓政璇 / "Danny" Cheng-Hsuan Han
+## 韓政璇 / Cheng-Hsuan "Danny" Han
 ---
 
 A place where Danny boi keeps his thoughts from slipping away.
