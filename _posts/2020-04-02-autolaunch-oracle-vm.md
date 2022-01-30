@@ -1,9 +1,13 @@
 ---
 layout:     post
-title:      "Launch Free Oracle VMs Automatically"
+title:      "(Archived) Launch Free Oracle VMs Automatically"
 date:       2020-04-02 13:25:28 +0800
 categories: misc
 comments:   true
+
+---
+
+UPDATE 2022-01-30: This article is only kept here to remind me how stupid I was to ever wanted to try their product. [You don't want to use Oracle Cloud](https://www.brightworkresearch.com/the-problem-with-the-oracle-cloud-and-colocation){:rel="nofollow noopener noreferrer" target="_blank"}. Speaking from my experience, they are a pain to deal with when there is a problem. JUST. DON'T. USE. IT.
 
 ---
 
