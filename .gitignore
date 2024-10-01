@@ -1,3 +1,9 @@
+# jekyll
 _site
 .sass-cache
 .jekyll-metadata
+
+# next
+node_modules
+tsconfig.tsbuildinfo
+.next
