@@ -2,7 +2,7 @@
 
 import Giscus from '@giscus/react';
 
-export function CommentArea() {
+export function Comments() {
   return (
     <Giscus
       repo="dannyh79/dannyh79.github.io"
@@ -21,4 +21,4 @@ export function CommentArea() {
   );
 }
 
-export default CommentArea;
+export default Comments;
