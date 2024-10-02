@@ -1,5 +1,6 @@
 {
   "private": true,
+  "type": "module",
   "scripts": {
     "dev": "next dev",
     "format": "prettier -w .",
@@ -27,6 +28,8 @@
     "eslint": "^8.57.0",
     "eslint-config-next": "^14.2.14",
     "eslint-config-prettier": "^9.1.0",
+    "husky": "^9.1.6",
+    "lint-staged": "^15.2.10",
     "prettier": "^3.3.3"
   }
 }
