@@ -1,26 +1,20 @@
-import Link from './Link'
+import Link from './Link';
 
 function ArrowIcon() {
   return (
-    <svg
-      width="12"
-      height="12"
-      viewBox="0 0 12 12"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-    >
+    <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
       <path
         d="M2.07102 11.3494L0.963068 10.2415L9.2017 1.98864H2.83807L2.85227 0.454545H11.8438V9.46023H10.2955L10.3097 3.09659L2.07102 11.3494Z"
         fill="currentColor"
       />
     </svg>
-  )
+  );
 }
 
 const links: { href: string; label: string }[] = [
-  { href: 'mailto:chenghsuan.han@gmail.com', label: 'chenghsuan.han@gmail.com'  },
-  { href: 'https://github.com/dannyh79', label: 'My GitHub'  },
-  { href: '/rss', label: 'RSS'  },
+  { href: 'mailto:chenghsuan.han@gmail.com', label: 'chenghsuan.han@gmail.com' },
+  { href: 'https://github.com/dannyh79', label: 'My GitHub' },
+  { href: '/rss', label: 'RSS' },
 ];
 
 export default function Footer() {
@@ -46,12 +40,14 @@ export default function Footer() {
       </p>
       <p className="text-neutral-600 dark:text-neutral-300">
         License&nbsp;
-        <Link href="https://creativecommons.org/licenses/by-nc/4.0/"
-           target="_blank"
-           rel="nofollow noopener noreferrer">
+        <Link
+          href="https://creativecommons.org/licenses/by-nc/4.0/"
+          target="_blank"
+          rel="nofollow noopener noreferrer"
+        >
           CC BY-NC 4.0
         </Link>
       </p>
     </footer>
-  )
+  );
 }

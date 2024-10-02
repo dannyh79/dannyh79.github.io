@@ -1,7 +1,7 @@
 export const metadata = {
   title: 'About',
   description: `About Danny.`,
-}
+};
 
 export default function Page() {
   return (
@@ -10,5 +10,5 @@ export default function Page() {
       <h2 className="font-semibold text-xl mb-4">韓政璇 / Cheng-Hsuan “Danny” Han</h2>
       <p>A place where Danny boi keeps his thoughts from slipping away.</p>
     </section>
-  )
+  );
 }

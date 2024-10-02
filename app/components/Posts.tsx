@@ -1,19 +1,17 @@
-import { postSubPath } from 'app/constants'
-import { formatDate, getBlogPosts } from 'app/posts/utils'
-import Link from './Link'
+import { postSubPath } from 'app/constants';
+import { formatDate, getBlogPosts } from 'app/posts/utils';
+import Link from './Link';
 
 export default function BlogPosts() {
-  const posts = getBlogPosts()
+  const posts = getBlogPosts();
   return (
     <div>
       {posts
         .sort((a, b) => {
-          if (
-            new Date(a.metadata.publishedAt) > new Date(b.metadata.publishedAt)
-          ) {
-            return -1
+          if (new Date(a.metadata.publishedAt) > new Date(b.metadata.publishedAt)) {
+            return -1;
           }
-          return 1
+          return 1;
         })
         .map((post) => (
           <Link
@@ -32,5 +30,5 @@ export default function BlogPosts() {
           </Link>
         ))}
     </div>
-  )
+  );
 }

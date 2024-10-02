@@ -1,5 +1,5 @@
-import Link from 'next/link'
-import { postSubPath } from 'app/constants'
+import Link from 'next/link';
+import { postSubPath } from 'app/constants';
 
 const navItems = {
   '/': {
@@ -11,7 +11,7 @@ const navItems = {
   '/about': {
     name: 'About',
   },
-}
+};
 
 export default function Navbar() {
   return (
@@ -31,11 +31,11 @@ export default function Navbar() {
                 >
                   {name}
                 </Link>
-              )
+              );
             })}
           </div>
         </nav>
       </div>
     </aside>
-  )
+  );
 }
