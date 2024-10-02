@@ -1,26 +1,24 @@
-import Script from 'next/script';
+'use client';
 
-const Giscus = () => {
+import Giscus from '@giscus/react';
+
+export function CommentArea() {
   return (
-    // Generated via https://giscus.vercel.app
-    <Script
-      src="https://giscus.app/client.js"
-      data-repo="dannyh79/dannyh79.github.io"
-      data-repo-id="MDEwOlJlcG9zaXRvcnkxOTkzNjQ1MTc="
-      data-category="General"
-      data-category-id="DIC_kwDOC-IPpc4Ci-1k"
-      data-mapping="pathname"
-      data-strict="1"
-      data-reactions-enabled="1"
-      data-emit-metadata="0"
-      data-input-position="top"
-      data-theme="preferred_color_scheme"
-      data-lang="en"
-      data-loading="lazy"
-      crossOrigin="anonymous"
-      async
+    <Giscus
+      repo="dannyh79/dannyh79.github.io"
+      repoId="MDEwOlJlcG9zaXRvcnkxOTkzNjQ1MTc="
+      category="General"
+      categoryId="DIC_kwDOC-IPpc4Ci-1k"
+      mapping="pathname"
+      strict="1"
+      reactions-enabled="1"
+      emit-metadata="0"
+      input-position="top"
+      theme="preferred_color_scheme"
+      lang="en"
+      loading="lazy"
     />
   );
-};
+}
 
-export default Giscus;
+export default CommentArea;
