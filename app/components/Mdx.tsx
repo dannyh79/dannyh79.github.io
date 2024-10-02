@@ -50,7 +50,7 @@ function CustomLink(props: CustomLinkProps) {
 }
 
 function RoundedImage(props: ImageProps) {
-  return <Image className="rounded-lg" {...props} />
+  return <Image className="rounded-lg" {...props} alt={props.alt || 'Illustration.'} />
 }
 
 function Code({ children, ...props }: React.PropsWithChildren) {
