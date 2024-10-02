@@ -4,6 +4,7 @@ import type { Metadata } from 'next';
 import { GeistMono } from 'geist/font/mono';
 import { GeistSans } from 'geist/font/sans';
 import Footer from './components/Footer';
+import GoogleAnalytics from './components/GoogleAnalytics';
 import Navbar from './components/Nav';
 import { baseUrl, siteDescription as description, title } from './constants';
 
@@ -53,6 +54,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <Navbar />
           {children}
           <Footer />
+          <GoogleAnalytics />
         </main>
       </body>
     </html>
