@@ -1,5 +1,6 @@
 import { notFound } from 'next/navigation';
 import { baseUrl, name, postSubPath } from 'app/constants';
+import Giscus from 'app/components/CommentArea';
 import { CustomMDX } from 'app/components/Mdx';
 import { formatDate, getBlogPosts } from '../utils';
 
@@ -87,6 +88,7 @@ export default function Blog({ params }: Props) {
       <article className="prose">
         <CustomMDX source={post.content} />
       </article>
+      <Giscus />
     </section>
   );
 }
