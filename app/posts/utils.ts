@@ -37,15 +37,19 @@ function readMDXFile(filePath: fs.PathOrFileDescriptor) {
   return parseFrontmatter(rawContent);
 }
 
+function trimDatePrefixFromString(str: string): string {
+  return str.replace(/^\d{4}-\d{2}-\d{2}-/, '');
+}
+
 function getMDXData(dir: fs.PathLike) {
   const files = getMDorMDXFiles(dir);
   return files.map((file) => {
     const { metadata, content } = readMDXFile(path.join(dir.toString(), file));
-    const slug = path.basename(file, path.extname(file));
+    const filename = path.basename(file, path.extname(file));
 
     return {
       metadata,
-      slug,
+      slug: trimDatePrefixFromString(filename),
       content,
     };
   });
