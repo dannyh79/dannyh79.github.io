@@ -1,9 +1,13 @@
 import { postSubPath } from 'app/constants';
-import { formatDate, getBlogPosts } from 'app/posts/utils';
+import { type Post, formatDate, getBlogPosts } from 'app/posts/utils';
 import Link from './Link';
 
-export default function BlogPosts() {
-  const posts = getBlogPosts();
+type Props = {
+  posts?: Post[];
+};
+
+export default function BlogPosts(props: Props) {
+  const posts = props.posts ?? getBlogPosts();
   return (
     <div>
       {posts
