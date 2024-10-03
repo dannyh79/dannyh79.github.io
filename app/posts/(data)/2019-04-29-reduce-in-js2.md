@@ -10,10 +10,9 @@ In this section we are picking up what is left from [Part1](2019-04-24-reduce-in
 
 ![reduce syntax](/assets/images/reduce-in-js2/1.png)
 
-<span style={{ color: 'gray', fontSize: '80%', textAlign: 'center' }}>
-Fig. 1; from
-[MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/reduce)
-</span>
+<Figcaption>
+    Fig. 1; from [MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/reduce)
+</Figcaption>
 
 Regarding whether the initial value is set, there is connection between **initialValue** and the start point of **currentIndex** (see Fig. 1 "currentIndex"), though not fully manipulatable:
 
@@ -30,15 +29,15 @@ console.log(arr.reduce(getSum, 10));
 
 ![reduce iteration1](/assets/images/reduce-in-js2/2.png)
 
-<span style={{ color: 'gray', fontSize: '80%', textAlign: 'center' }}>
-Fig. 2; from
-[MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/reduce)
-</span>
+<Figcaption>
+    Fig. 2; from [MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/reduce)
+</Figcaption>
+
 ![reduce iteration2](/assets/images/reduce-in-js2/3.png)
-<span style={{ color: 'gray', fontSize: '80%', textAlign: 'center' }}>
-Fig. 3; from
-[MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/reduce)
-</span>
+
+<Figcaption>
+    Fig. 3; from [MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/reduce)
+</Figcaption>
 
 When `.reduce()` is called without an **initialValue**, **currentValue** is set to go from "index(**currentIndex**) **1** "
 (arr[1]; 1 in our example) in the first rotation of the loop,

@@ -7,9 +7,9 @@ categories: [elixir, phoenix, liveview]
 
 ![Twitter clone in Phoenix](/assets/images/phoenix-liveview-twitter/1.png)
 
-<span style={{ color: 'gray', fontSize: '80%', textAlign: 'center' }}>
-A snapshot of my PhxChirp ([repo](https://github.com/dannyh79/phx_chirp))
-</span>
+<Figcaption>
+    A snapshot of my PhxChirp ([repo](https://github.com/dannyh79/phx_chirp))
+</Figcaption>
 
 Made a Twitter clone last weekend by following the tutorial from Chris McCord's, creator of the [Phoenix Framework](https://github.com/phoenixframework/phoenix) that is written in [Elixir](https://elixir-lang.org/).
 

@@ -90,6 +90,14 @@ function createHeading(level: number) {
   return Heading;
 }
 
+type FigcaptionProps = React.DetailedHTMLProps<React.HTMLAttributes<HTMLElement>, HTMLElement>;
+
+function Figcaption(props: FigcaptionProps) {
+  const { className, ...restProps } = props;
+  const classes = 'text-sm text-center' + (!!className ? ` ${className}` : '');
+  return <span className={classes} {...restProps} />;
+}
+
 const components = {
   h1: createHeading(1),
   h2: createHeading(2),
@@ -101,6 +109,7 @@ const components = {
   a: CustomLink,
   code: Code,
   Table,
+  Figcaption,
 };
 
 export function CustomMDX(props: MDXRemoteProps) {

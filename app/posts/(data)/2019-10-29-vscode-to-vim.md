@@ -6,14 +6,16 @@ categories: [vim]
 ---
 
 ![illustration of terminal on 2019/12/28](/assets/images/vscode-to-vim/1.png)
-<span style={{ color: 'gray', fontSize: '80%', textAlign: 'center' }}>
-Setup as of 2019/12/28; W.I.P. dots can be found [HERE](https://gist.github.com/dannyh79/157ad3160ff92b5791019efd2e7afec9)
-</span>
+
+<Figcaption>
+    Setup as of 2019/12/28; W.I.P. dots can be found [HERE](https://gist.github.com/dannyh79/157ad3160ff92b5791019efd2e7afec9)
+</Figcaption>
 
 ![illustration of terminal on 2019/10/28](/assets/images/vscode-to-vim/2.png)
-<span style={{ color: 'gray', fontSize: '80%', textAlign: 'center' }}>
-Initial Setup on 2019/10/28 (Vim, Tmux)
-</span>
+
+<Figcaption>
+    Initial Setup on 2019/10/28 (Vim, Tmux)
+</Figcaption>
 
 My journey to Vim is rather a slowly one: about a week's worth of coding on side project to get the hang of it, enable Vim mode in VS Code for about a month to get use to the flow (with arrow keys from time to time...), and, onward to tinkering with config of terminal and Vim to get it a more IDE-like feel.
 

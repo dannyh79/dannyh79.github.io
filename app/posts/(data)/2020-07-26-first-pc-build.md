@@ -7,9 +7,9 @@ categories: [pc, windows, linux]
 
 ![Cover photo](/assets/images/first-pc-build/01.jpg)
 
-<span style={{ color: 'gray', fontSize: '80%', textAlign: 'center' }}>
-Parts used for this build
-</span>
+<Figcaption>
+    Parts used for this build
+</Figcaption>
 
 ## Table of Contents
 

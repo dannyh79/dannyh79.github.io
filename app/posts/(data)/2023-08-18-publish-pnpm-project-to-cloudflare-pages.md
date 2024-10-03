@@ -27,9 +27,9 @@ categories: [javascript]
 ...
 ```
 
-<span style={{ color: 'gray', fontSize: '80%', textAlign: 'center' }}>
-Fig 1. The failed part of [Cloudflare Pages](https://pages.cloudflare.com/)' project build log
-</span>
+<Figcaption>
+    Fig 1. The failed part of [Cloudflare Pages](https://pages.cloudflare.com/)' project build log
+</Figcaption>
 
 This happened when I was trying use `$ pnpm build` as [build command](https://developers.cloudflare.com/pages/platform/build-configuration/#build-commands-and-directories) to host my [brain teaser app](https://github.com/dannyh79/wake-up) on [Cloudflare Pages](https://pages.cloudflare.com/). ... And you are asking me why I chose it? Not just because I am adventurous, but also that I am already using Cloudflare.
 
