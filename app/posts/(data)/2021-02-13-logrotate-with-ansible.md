@@ -43,7 +43,7 @@ Logrotate can really come in handy when you need to manage logfiles on your Linu
 
   > Modify `/path/to/your/rails/log/{{ each_group.rails.env }}.log` to your logfile's path on your machine.
 
-  ```
+  ```jinja
   /path/to/your/rails/log/{{ each_group.rails.env }}.log {
       size 100M             # triggers when file is bigger than 100M
       dateext               # use date extension
@@ -73,7 +73,7 @@ $ run-parts --test /etc/cron.hourly
 > I usually use sites like [Chmod Calculator](https://chmod-calculator.com/) to map values.
 
 ```sh
-$ stat --format '%a' <filename>
+$ stat --format '%a' your-filename
 ```
 
 ### Finding out when cron.hourly Really Executes

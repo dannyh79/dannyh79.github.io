@@ -68,10 +68,10 @@ For Vim (See below for update):
 
   - [tpope/vim-fugitive](https://github.com/tpope/vim-fugitive) - version control in Vim
   - vim-airline/vim-airline - enabling smart tabline
-    > `let g:airline#extensions#tabline#enabled = 1`
+    > `let g:airline#extensions#tabline#enabled = 1{:vim}`
   - [jiangmiao/auto-pairs](https://github.com/jiangmiao/auto-pairs) - auto-pairing in Vim
   - Enables MacOS clipboard sharing in .vimrc
-    > `set clipboard=unnamed`
+    > `set clipboard=unnamed{:vim}`
 
 - Tmux:
   - [tmux-plugins/tpm](https://github.com/tmux-plugins/tpm) - Tmux plugin manager

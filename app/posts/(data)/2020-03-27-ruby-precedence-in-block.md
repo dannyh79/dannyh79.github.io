@@ -7,10 +7,10 @@ categories: [ruby]
 
 ## TLDR
 
-- In Ruby, blocks in braces, `{ ... }`, bind stronger than in `do ... end` do
+- In Ruby, blocks in braces, `{ ... }{:ruby}`, bind stronger than in `do ... end{:ruby}` do
 - Rule of thumb
-  1. Use `{ ... }` for single-line blocks
-  2. `do ... end` for multi-liners
+  1. Use `{ ... }{:ruby}` for single-line blocks
+  2. `do ... end{:ruby}` for multi-liners
 
 ## Try Guess the Output
 
@@ -63,35 +63,36 @@ lambda_print_one = lambda { puts 1 }
 
 ## Precedence in Execution
 
-Per documentation in Ruby-Doc.org, `{ ... }` blocks have priority below all [listed operations](https://ruby-doc.org/core-2.7.0/doc/syntax/precedence_rdoc.html), but `do ... end` blocks have even lower priority.
+Per documentation in Ruby-Doc.org, `{ ... }{:ruby}` blocks have priority below all [listed operations](https://ruby-doc.org/core-2.7.0/doc/syntax/precedence_rdoc.html), but `do ... end{:ruby}` blocks have even lower priority.
 
 - No difference in terms of output, as all gets executed before printed
 
-```ruby
-arr = [1, 2, 3]
-a = arr.map { |num| num * 2 }
-b = arr.map do
-  |num| num * 2
-end
+  ```ruby
+  arr = [1, 2, 3]
+  a = arr.map { |num| num * 2 }
+  b = arr.map do
+    |num| num * 2
+  end
 
-puts a # => [2, 4, 6]
-puts b # => [2, 4, 6]
-```
+  puts a # => [2, 4, 6]
+  puts b # => [2, 4, 6]
+  ```
 
 - The following `#map`s are interpreted differently in Ruby
-  - `puts arr.map { ... }` equals `puts(arr.map { ... })`, but
-  - `puts arr.map do ... end` are actually `puts(arr.map) do ... end`
 
-```ruby
-arr = [1, 2, 3]
-puts arr.map { |num| num * 2 } # prints the following
-# 2
-# 4
-# 6
-puts arr.map do
-  |num| num * 2
-end # => #<Enumerator:0x00007fb34d8d40c0>
-```
+  - `puts arr.map { ... }{:ruby}` equals `puts(arr.map { ... }){:ruby}`, but
+  - `puts arr.map do ... end{:ruby}` are actually `puts(arr.map) do ... end{:ruby}`
+
+    ```ruby
+    arr = [1, 2, 3]
+    puts arr.map { |num| num * 2 } # prints the following
+    # 2
+    # 4
+    # 6
+    puts arr.map do
+      |num| num * 2
+    end # => #<Enumerator:0x00007fb34d8d40c0>
+    ```
 
 See [Precedence](https://ruby-doc.org/core-2.7.0/doc/syntax/precedence_rdoc.html) for the comprehensive list of precedence.
 

@@ -9,13 +9,13 @@ categories: [vim, editor]
 
 ## TLDR
 
-- Vim 8.1 introduced terminal mode, `:terminal`
-- `:terminal` allows you to open terminals inside Vim, hence the potential to be as productive as being in a Tmux session
+- Vim 8.1 introduced terminal mode, `:terminal{:vim}`
+- `:terminal{:vim}` allows you to open terminals inside Vim, hence the potential to be as productive as being in a Tmux session
 - You probably don't need it if you are already using Tmux
 
 ## How is This Helpful?
 
-In Vim, prior to this, we can only access the shell through either typing `:!`, to and back from shell with hitting `CTRL + Z` then using `$ fg` , or Tmux.
+In Vim, prior to this, we can only access the shell through either typing `:!{:vim}`, to and back from shell with hitting `CTRL + Z` then using `$ fg{:vim}` , or Tmux.
 
 Now, with the new ternimal mode, combining tabs, we can work wonders with just Vim! In cover photo, I have
 
@@ -53,11 +53,11 @@ nnoremap <silent> <leader>t :vert term<CR>
 - Go to terminal Normal mode with `CTRL + w + N` to copy the text;
 - Hit `i` to go back to terminal mode
 - Use Vim's Ex command in terminal pane with `CTRL + w + :`
-- From there, type command `:term` to open another terminal pane below the current pane
+- From there, type command `:term{:vim}` to open another terminal pane below the current pane
 
 ## References
 
-- `:h terminal`
+- `:h terminal{:vim}`
 
 - [Vim 8.1 Release Note](https://www.vim.org/vim-8.1-released.php) on vim.org/
 

@@ -40,9 +40,9 @@ MySQL is installed from package "mysql57" via [yay](https://github.com/Jguer/yay
 
 ### MySQL Does not Start
 
-1. Good ol' `ERROR 2002 (HY000): Can't connect to local MySQL server through socket '/var/run/mysqld/mysqld.sock' (2)` printed on screen when trying to use MySQL CLI with `$ sudo mysql`
-2. It showed up dead with exit status 1 in `$ systemctl status mysqld.service`
-3. Found the below in logs with `$ journalctl -u mysqld.service`
+1. Good ol' `ERROR 2002 (HY000): Can't connect to local MySQL server through socket '/var/run/mysqld/mysqld.sock' (2)` printed on screen when trying to use MySQL CLI with `$ sudo mysql{:sh}`
+2. It showed up dead with exit status 1 in `$ systemctl status mysqld.service{:sh}`
+3. Found the below in logs with `$ journalctl -u mysqld.service{:sh}`
 
    ```
    [Warning] Can't create file /var/lib/mysql/user.lower-test
@@ -51,16 +51,16 @@ MySQL is installed from package "mysql57" via [yay](https://github.com/Jguer/yay
 
 4. Realized that it could be something about insufficient permission, with some [googling](https://dba.stackexchange.com/questions/106085/cant-create-file-var-lib-mysql-user-lower-test)
 
-- It said the owner:group is `root:root` in `$ ls -al /var/lib | grep mysql`
-- Check the service file (mine was at "/usr/lib/systemd/system/mysqld.service", shown right after "Loaded: loaded" in `$ systemctl status mysqld.service`) to see how MySQL was being started
+- It said the owner:group is `root:root` in `$ ls -al /var/lib | grep mysql{:sh}`
+- Check the service file (mine was at "/usr/lib/systemd/system/mysqld.service", shown right after "Loaded: loaded" in `$ systemctl status mysqld.service{:sh}`) to see how MySQL was being started
 - Turned out that it was trying to use `mysql:mysql` as the user:group to start the service
 
-4. `$ sudo chown mysql:mysql`
-5. Showed up running after restarting MySQL with `$ sudo systemctl restart mysqld.service`
+4. `$ sudo chown mysql:mysql{:sh}`
+5. Showed up running after restarting MySQL with `$ sudo systemctl restart mysqld.service{:sh}`
 
 ### MySQL Does not Start
 
-1. Failed to log in with root user, `$ sudo mysql`
+1. Failed to log in with root user, `$ sudo mysql{:sh}`
 2. Appended the option `skip-grant-tables` to "/etc/mysql/my.cnf" then restart MySQL
 
    > Exercise this with caution. You might want to append `skip-networking` to the config file as well to cut remote connections
@@ -85,4 +85,4 @@ MySQL is installed from package "mysql57" via [yay](https://github.com/Jguer/yay
    $ sudo systemctl restart mysqld.service
    ```
 
-5. `$ sudo mysql` to log in
+5. `$ sudo mysql{:sh}` to log in

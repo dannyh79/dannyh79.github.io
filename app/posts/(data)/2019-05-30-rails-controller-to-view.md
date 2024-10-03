@@ -111,7 +111,7 @@ instance = SomeOtherController.new
 
 1. On the inside, Rails creates a new instance of the controller and calls a certain method (or "action", in terms of MVC model), "show"
 2. Now the instance has the instance variables in the method "show"
-3. At the end of the action method it calls `render()` to bind variables in the ERB template (see [default rendering in controllers](https://guides.rubyonrails.org/layouts_and_rendering.html#rendering-by-default-convention-over-configuration-in-action)) with instance variables that we just created
+3. At the end of the action method it calls `render(){:ruby}` to bind variables in the ERB template (see [default rendering in controllers](https://guides.rubyonrails.org/layouts_and_rendering.html#rendering-by-default-convention-over-configuration-in-action)) with instance variables that we just created
 4. Variables in ERB template are now filled in and the template gets "translated" into HTML
 
 ## Why not just the Local Variables, but Instance Variables for Controller's Actions?
@@ -120,7 +120,7 @@ instance = SomeOtherController.new
 
 From the illustration above, variables must still be accessible out of its containing method’s scope, so they can be used in ERB template.
 
-Consider the examples below. In `Ex. 1`, the value of the instance variable `@var` is still accessible outside of the `bar` method, where in `Ex. 2`, the value assigned from local `var` can’t be found beyond the scope of `boo` method:
+Consider the examples below. In `Ex. 1`, the value of the instance variable `@var{:ruby}` is still accessible outside of the `bar{:ruby}` method, where in `Ex. 2`, the value assigned from local `var{:ruby}` can’t be found beyond the scope of `baz{:ruby}` method:
 
 ```ruby
 # Ex. 1

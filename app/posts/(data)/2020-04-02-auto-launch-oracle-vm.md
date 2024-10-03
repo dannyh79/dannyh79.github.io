@@ -68,7 +68,7 @@ Install [official CLI](https://github.com/oracle/oci-cli).
 
 > There is a [Homebrew formulae](https://github.com/jpoon/homebrew-oci-cli) for this. Use it at your own discretion.
 
-Once installed, run `$ oci setup config` and enter your user OCID, tenancy OCID, region, etc.
+Once installed, run `$ oci setup config{:sh}` and enter your user OCID, tenancy OCID, region, etc.
 
 > I hit "enter" to the rest of the options to use the default.
 
@@ -81,7 +81,7 @@ Find your `oci_api_key_public.pem` (path is in `Find your public written to:` in
 
 #### 5-3. Verify
 
-The setup is done when you see the below using `$ oci iam availability-domain list`:
+The setup is done when you see the below using `$ oci iam availability-domain list{:sh}`:
 ![put public key to OCI](/assets/images/autolaunch-oracle-vm/9.png)
 
 #### 6. Try Create Instances via CLI
@@ -103,11 +103,11 @@ You should see the following error from the response if it works as expected:
 
 #### 7-1. Save the Command as Shell Script
 
-Get the path of oci executable with `$ which oci` and replace `oci` in front of the command in step 6 with the path you got.
+Get the path of oci executable with `$ which oci{:sh}` and replace `oci{:sh}` in front of the command in step 6 with the path you got.
 
-> Mine is at `/usr/local/bin/oci`
+> Mine is at `/usr/local/bin/oci{:sh}`
 
-Then create a file as `oci-auto-launch.sh`, save it in your home directory (`~/`):
+Then create a file as `oci-auto-launch.sh{:sh}`, save it in your home directory (`~/{:sh}`):
 
 ```sh
 #!/bin/sh
@@ -123,9 +123,9 @@ Then create a file as `oci-auto-launch.sh`, save it in your home directory (`~/`
 
 #### 7-2. Execute the Script with Cron Job
 
-Make the file excutable with `$ chmod +x ~/oci-auto-launch.sh`. Then run `$ crontab -e` and put the following in the file, save and exit:
+Make the file excutable with `$ chmod +x ~/oci-auto-launch.sh{:sh}`. Then run `$ crontab -e{:sh}` and put the following in the file, save and exit:
 
-> I use `$ EDITOR=vim crontab -e` here.
+> I use `$ EDITOR=vim crontab -e{:sh}` here.
 
 ```sh
 * * * * * ~/oci-auto-launch.sh > ~/oci-auto-launch.log 2>&1
@@ -135,11 +135,11 @@ Make the file excutable with `$ chmod +x ~/oci-auto-launch.sh`. Then run `$ cron
 
 #### 8. Check the Status of the Launch
 
-You may use `$ tail -F oci-auto-launch.log` to see what's going on at the moment. You know you get 2 instances when you see code `LimitExceeded` with a status of `400` from the response. :)
+You may use `$ tail -F oci-auto-launch.log{:sh}` to see what's going on at the moment. You know you get 2 instances when you see code `LimitExceeded` with a status of `400` from the response. :)
 
 #### 9. Stop the Cron Job
 
-Once you are done, run `$ crontab -e`, remove the job, save and exit.
+Once you are done, run `$ crontab -e{:sh}`, remove the job, save and exit.
 
 ## After Getting Two VMs
 
@@ -147,7 +147,7 @@ Once you are done, run `$ crontab -e`, remove the job, save and exit.
 
 _See Oracle's [Connecting to Your Instance](https://docs.cloud.oracle.com/en-us/iaas/Content/GSG/Tasks/testingconnection.htm)._
 
-The below is how I alias the command to `$ ssh oci1`:
+The below is how I alias the command to `$ ssh oci1{:sh}`:
 
 ```
 # ~/.ssh/config

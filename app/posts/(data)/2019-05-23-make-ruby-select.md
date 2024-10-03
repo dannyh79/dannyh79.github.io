@@ -39,7 +39,7 @@ p arr.dan_select { |list_item| list_item.even? }
 
 ## Explanation
 
-1. Add the method, i.e., `dan_select()`, to Array class, via Ruby’s ["open classes"](https://docs.ruby-lang.org/en/2.4.0/syntax/refinements_rdoc.html) feature
+1. Add the method, i.e., `dan_select(){:ruby}`, to Array class, via Ruby’s ["open classes"](https://docs.ruby-lang.org/en/2.4.0/syntax/refinements_rdoc.html) feature
 
 2. Make a result "container" that we can put the filtered list item
 

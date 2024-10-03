@@ -9,7 +9,7 @@ categories: [git]
 
 > Check out the awesome guide [How to Sign Git Commits](https://merikan.com/2019/05/how-to-sign-git-commits/) if you have not configure git signature before.
 
-1. Generate a key from `$ gpg --full-generate-key`
+1. Generate a key from `$ gpg --full-generate-key{:sh}`
 2. Update [user] credentials in git config
 3. (Optional) Export the key to GitHub
 

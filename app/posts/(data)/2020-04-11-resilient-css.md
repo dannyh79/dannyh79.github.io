@@ -116,7 +116,7 @@ h1 {
 
 #### One Way to Use Feature Query
 
-Take `display: grid;` for Example:
+Take `display: grid;{:css}` for Example:
 
 1. Figure out how HTML content will be should there be no CSS at all. This is to make sure HTML markup is solid in the first place.
 2. Write CSS without grid layout

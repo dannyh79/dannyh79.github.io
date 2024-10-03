@@ -9,14 +9,14 @@ categories: [linux, archlinux]
 
 1. Get an USB with Arch Linux ISO flash in (I use [balena-etcher](https://www.balena.io/etcher/))
 2. Boot from Arch (in UEFI mode)
-3. `$ fdisk -l` to find out where the Arch installation partition and EFI partition are
-4. Try mount, e.g., `$ mount /dev/nvme0n1p1 /mnt` to mount **the Arch partition**, "/dev/nvmeXn1pY" or "/dev/sdXY" (substitute "X" and "Y" with your disk/partition numbers), to `/mnt`
-5. Try mount, e.g., `$ mount /dev/nvme1n1p1 /boot/efi` to mount **the EFI partition**, "/dev/nvmeXn1p1" or "/dev/sdX1" (substitute "X" with your partition number), to `/boot/efi`
+3. `$ fdisk -l{:sh}` to find out where the Arch installation partition and EFI partition are
+4. Try mount, e.g., `$ mount /dev/nvme0n1p1 /mnt{:sh}` to mount **the Arch partition**, "/dev/nvmeXn1pY" or "/dev/sdXY" (substitute "X" and "Y" with your disk/partition numbers), to `/mnt{:sh}`
+5. Try mount, e.g., `$ mount /dev/nvme1n1p1 /boot/efi{:sh}` to mount **the EFI partition**, "/dev/nvmeXn1p1" or "/dev/sdX1" (substitute "X" with your partition number), to `/boot/efi`
 
-   > Run `$ mkdir /boot/efi`, if there is no `/boot/efi` available, then mount again.
+   > Run `$ mkdir /boot/efi{:sh}`, if there is no `/boot/efi` available, then mount again.
 
-6. `$ arch-chroot`
-7. `$ grub-install --target=x86_64-efi --efi-directory=/boot/efi --bootloader=arch_linux`
+6. `$ arch-chroot{:sh}`
+7. `$ grub-install --target=x86_64-efi --efi-directory=/boot/efi --bootloader=arch_linux{:sh}`
 8. Reboot to test
 
 ## If the Entry of Windows Is not in GRUB Boot Menu
@@ -28,9 +28,9 @@ categories: [linux, archlinux]
    $ grub-mkconfig -o /boot/grub/grub.cfg
    ```
 
-2. If the entry is still not there, `$ fdisk -l` to look for **YOUR EFI PARTITION**, "/dev/nvmeXn1p1" or "/dev/sdX1" (substitute "X" with your partition number)
-3. `$ blkid /dev/nvme1n1p1` to get the `UUID` of the partition
-4. `$ nano /etc/grub.d/40_custom` to manually add the entry (replace `YOUR-UUID` with the UUID got from step 3) at the end of the file
+2. If the entry is still not there, `$ fdisk -l{:sh}` to look for **YOUR EFI PARTITION**, "/dev/nvmeXn1p1" or "/dev/sdX1" (substitute "X" with your partition number)
+3. `$ blkid /dev/nvme1n1p1{:sh}` to get the `UUID` of the partition
+4. `$ nano /etc/grub.d/40_custom{:sh}` to manually add the entry (replace `YOUR-UUID` with the UUID got from step 3) at the end of the file
 
    ```
    menuentry "Windows 10" --class windows --class os {
@@ -39,7 +39,7 @@ categories: [linux, archlinux]
    }
    ```
 
-5. `$ grub-mkconfig -o /boot/grub/grub.cfg` again, then reboot to test
+5. `$ grub-mkconfig -o /boot/grub/grub.cfg{:sh}` again, then reboot to test
 
 ## Refs
 

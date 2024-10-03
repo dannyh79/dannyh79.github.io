@@ -6,7 +6,7 @@ categories: [javascript]
 ---
 
 In this section we are picking up what is left from [Part1](2019-04-24-reduce-in-js1),
-**initialValue** and **currentIndex** parameter in .reduce(), as well as some of `.reduce()`'s application.
+**initialValue** and **currentIndex** parameter in `.reduce(){:js}`, as well as some of `.reduce(){:js}`'s application.
 
 ![reduce syntax](/assets/images/reduce-in-js2/1.png)
 
@@ -39,11 +39,11 @@ console.log(arr.reduce(getSum, 10));
     Fig. 3; from [MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/reduce)
 </Figcaption>
 
-When `.reduce()` is called without an **initialValue**, **currentValue** is set to go from "index(**currentIndex**) **1** "
-(arr[1]; 1 in our example) in the first rotation of the loop,
-where the one that is set with an **initialValue** "10" is going from "index(**currentIndex**) **0**" (arr[0]; 0) in the first call.
+When `.reduce(){:js}` is called without an **initialValue**, **currentValue** is set to go from "index(**currentIndex**) **1** "
+(`arr[1]{:js}`; 1 in our example) in the first rotation of the loop,
+where the one that is set with an **initialValue** "10" is going from "index(**currentIndex**) **0**" (`arr[0]{:js}`; 0) in the first call.
 
-Aside from adding up the values in a plain array of numbers, `.reduce()` can also be used to
+Aside from adding up the values in a plain array of numbers, `.reduce(){:js}` can also be used to
 
 1.) [Calculate the sum of the values of a certain key in an object array](https://codeburst.io/learn-understand-javascripts-reduce-function-b2b0406efbdc), or
 
@@ -90,4 +90,4 @@ let countedNames = names.reduce(function (allNames, name) {
 // { 'Alice': 2, 'Bob': 1, 'Tiff': 1, 'Bruce': 1 }
 ```
 
-_...more application of `.reduce()` can be found on [MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/Reduce#Examples)_
+_...more application of `.reduce(){:js}` can be found on [MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/Reduce#Examples)_

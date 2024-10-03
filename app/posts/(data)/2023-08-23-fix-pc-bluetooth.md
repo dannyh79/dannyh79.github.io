@@ -15,8 +15,8 @@ If Bluetooth is down for reason unknown, try cold reboot. It might just do magic
 - Bluetooth is down for no reason
   - Bluetooth from KDE (the desktop environment of my PC) System Settings showed `No Bluetooth adapters found`
   - Logs showed `Bluetooth service was skipped because of an unmet condition check`
-    1. `$ systemctl status bluetooth.service` showed the service is dead
-    2. `$ journalctl -u bluetooth.service` showed such; supposed to be `Starting Bluetooth service...` after boot
+    1. `$ systemctl status bluetooth.service{:sh}` showed the service is dead
+    2. `$ journalctl -u bluetooth.service{:sh}` showed such; supposed to be `Starting Bluetooth service...` after boot
 
 ## Steps to Cold Reboot
 

@@ -6,12 +6,12 @@ publishedAt: 2019-06-23
 categories: [ruby]
 ---
 
-|                                  | include                                                              | extend                                                                  |
-| -------------------------------- | -------------------------------------------------------------------- | ----------------------------------------------------------------------- |
-| API                              | include(module, ...) → self                                          | extend(module, ...) → obj                                               |
-| Behavior                         | Invokes `Module.append_features` on each parameter in reverse order. | Adds to obj the instance methods from each module given as a parameter. |
-| \*When used inside of a class... | Methods become **instance methods** of the class                     | Methods become **class methods** of the class                           |
-| When used upon an instance...    |                                                                      | Adds to obj the instance methods from each module given as a parameter. |
+|                                  | `include{:ruby}`                                                            | `extend{:ruby}`                                                         |
+| -------------------------------- | --------------------------------------------------------------------------- | ----------------------------------------------------------------------- |
+| API                              | include(module, ...) → self                                                 | extend(module, ...) → obj                                               |
+| Behavior                         | Invokes `Module.append_features{:ruby}` on each parameter in reverse order. | Adds to obj the instance methods from each module given as a parameter. |
+| \*When used inside of a class... | Methods become **instance methods** of the class                            | Methods become **class methods** of the class                           |
+| When used upon an instance...    |                                                                             | Adds to obj the instance methods from each module given as a parameter. |
 
 ### Code Example
 

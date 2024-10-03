@@ -54,7 +54,7 @@ A block, or [closure](<https://en.wikipedia.org/wiki/Closure_(computer_programmi
 do puts 1 end # gets "SyntaxError"
 ```
 
-> Do you know there is difference between using `{ ... }` and `do ... end` block? Check out my blog post [Difference between "{}" & "do...end" in Ruby](/posts/ruby-precedence-in-block)!
+> Do you know there is difference between using `{ ... }{:ruby}` and `do ... end{:ruby}` block? Check out my blog post [Difference between "{}" & "do...end" in Ruby](/posts/ruby-precedence-in-block)!
 
 ## Proc and Lambda
 
@@ -65,49 +65,49 @@ do puts 1 end # gets "SyntaxError"
 
 - Ways to create a proc (courtesy of [A Guide to Function Composition in Ruby](https://www.ghostcassette.com/function-composition-in-ruby/#functions-in-ruby))
 
-```ruby
-# Use the Proc class constructor
-double = Proc.new { |number| number * 2 }
+  ```ruby
+  # Use the Proc class constructor
+  double = Proc.new { |number| number * 2 }
 
-# Use the Kernel#proc method as a shorthand
-double = proc { |number| number * 2 }
+  # Use the Kernel#proc method as a shorthand
+  double = proc { |number| number * 2 }
 
-# Receive a block as an argument (note the &)
-def make_proc(&block)
-  block
-end
+  # Receive a block as an argument (note the &)
+  def make_proc(&block)
+    block
+  end
 
-double = make_proc { |number| number * 2 }
+  double = make_proc { |number| number * 2 }
 
-# Use Proc.new to capture a block passed to a method without an
-# explicit block argument
-def make_proc
-  Proc.new
-end
+  # Use Proc.new to capture a block passed to a method without an
+  # explicit block argument
+  def make_proc
+    Proc.new
+  end
 
-double = make_proc { |number| number * 2 }
-```
+  double = make_proc { |number| number * 2 }
+  ```
 
 - Ways to call a proc (courtesy of [A Guide to Function Composition in Ruby](https://www.ghostcassette.com/function-composition-in-ruby/#functions-in-ruby))
 
-```ruby
-double.call(2) # => 4
-double.(2)     # => 4
-double[2]      # => 4
-double === 2   # => 4
-```
+  ```ruby
+  double.call(2) # => 4
+  double.(2)     # => 4
+  double[2]      # => 4
+  double === 2   # => 4
+  ```
 
 ### Lambda - Proc with Flavor
 
 - Ways to create a lambda (courtesy of [A Guide to Function Composition in Ruby](https://www.ghostcassette.com/function-composition-in-ruby/#functions-in-ruby))
 
-```ruby
-# Use Kernel#lambda
-double = lambda { |number| number * 2 }
+  ```ruby
+  # Use Kernel#lambda
+  double = lambda { |number| number * 2 }
 
-# Use the Lambda literal syntax (more elegant)
-double = ->(number) { number * 2 }
-```
+  # Use the Lambda literal syntax (more elegant)
+  double = ->(number) { number * 2 }
+  ```
 
 - Ways to call a lambda
   > Same as proc's
@@ -116,12 +116,12 @@ double = ->(number) { number * 2 }
 
 > Summarized from [Lambda and Non-Lambda Semantics](http://ruby-doc.org/core-2.6.3/Proc.html#class-Proc-label-Lambda+and+non-lambda+semantics).
 
-| Scenario                                        | Proc                                                                                | Lambda                          |
-| ----------------------------------------------- | ----------------------------------------------------------------------------------- | ------------------------------- |
-| a.) _When there is a `return` on the inside..._ | Jumps out and end the embracing function (function that called the proc)            | **ONLY** jumps out of the block |
-| b.) _When being fed on extra args..._           | NO ERROR raised                                                                     | `ArgumentError`                 |
-| c.) _When there is not enough args..._          | Missing args will be substituted with `nil`                                         | `ArgumentError`                 |
-|                                                 | If the last arg entered is an array, it will be broken down to fit the missing args |                                 |
+| Scenario                                               | Proc                                                                                | Lambda                          |
+| ------------------------------------------------------ | ----------------------------------------------------------------------------------- | ------------------------------- |
+| a.) _When there is a `return{:ruby}` on the inside..._ | Jumps out and end the embracing function (function that called the proc)            | **ONLY** jumps out of the block |
+| b.) _When being fed on extra args..._                  | NO ERROR raised                                                                     | `ArgumentError{:ruby}`          |
+| c.) _When there is not enough args..._                 | Missing args will be substituted with `nil{:ruby}`                                  | `ArgumentError{:ruby}`          |
+|                                                        | If the last arg entered is an array, it will be broken down to fit the missing args |                                 |
 
 ### Example
 
