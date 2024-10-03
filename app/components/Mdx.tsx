@@ -98,6 +98,14 @@ function Figcaption(props: FigcaptionProps) {
   return <span className={classes} {...restProps} />;
 }
 
+type BlockquoteProps = React.DetailedHTMLProps<React.BlockquoteHTMLAttributes<HTMLQuoteElement>, HTMLQuoteElement>;
+
+function Blockquote(props: BlockquoteProps) {
+  const { className, ...restProps } = props;
+  const classes = 'font-semibold italic border-s-2 pl-4' + (!!className ? ` ${className}` : '');
+  return <blockquote className={classes} {...restProps} />;
+}
+
 const components = {
   h1: createHeading(1),
   h2: createHeading(2),
@@ -110,6 +118,7 @@ const components = {
   code: Code,
   Table,
   Figcaption,
+  blockquote: Blockquote
 };
 
 export function CustomMDX(props: MDXRemoteProps) {
