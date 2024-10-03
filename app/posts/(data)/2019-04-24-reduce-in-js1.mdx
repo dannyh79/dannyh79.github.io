@@ -36,7 +36,7 @@ function getSum(total, num) {
 }
 ```
 
-The first part is where we define the **callback** function[¹] (function that gets called after being defined) for later use in `.reduce()`. Inside of it we have the **accumulator** (_total_ in example), the container that stores the sum of the previous values in each iteration, and **currentValue** (_num_), the number to be added in current cycle. The two works like this when the callback is called in `.reduce()`:
+The first part is where we define the **callback** function[^1] (function that gets called after being defined) for later use in `.reduce()`. Inside of it we have the **accumulator** (_total_ in example), the container that stores the sum of the previous values in each iteration, and **currentValue** (_num_), the number to be added in current cycle. The two works like this when the callback is called in `.reduce()`:
 
 ![reduce iteration](/assets/images/reduce-in-js1/2.png)
 
@@ -55,4 +55,4 @@ A more thorough guide on **initialValue** and **currentIndex** parameter will be
 
 ---
 
-[¹] You could give the callback function a name of your liking, but keeping it readable goes a long way
+[^1]: You could give the callback function a name of your liking, but keeping it readable goes a long way
