@@ -1,8 +1,8 @@
 import React from 'react';
 import Image, { type ImageProps } from 'next/image';
 import { MDXRemote, type MDXRemoteProps } from 'next-mdx-remote/rsc';
+import rehypePrettyCode from 'rehype-pretty-code';
 import remarkGfm from 'remark-gfm';
-import { highlight } from 'sugar-high';
 import Link from './Link';
 
 type TableProps = {
@@ -50,11 +50,6 @@ function CustomLink(props: CustomLinkProps) {
 
 function RoundedImage(props: ImageProps) {
   return <Image className="rounded-lg" {...props} alt={props.alt || 'Illustration.'} />;
-}
-
-function Code({ children, ...props }: React.PropsWithChildren) {
-  const codeHTML = highlight(children?.toString() ?? '');
-  return <code dangerouslySetInnerHTML={{ __html: codeHTML }} {...props} />;
 }
 
 function slugify(str: string) {
@@ -115,16 +110,16 @@ const components = {
   h6: createHeading(6),
   Image: RoundedImage,
   a: CustomLink,
-  code: Code,
   Table,
   Figcaption,
   blockquote: Blockquote
 };
 
 export function CustomMDX(props: MDXRemoteProps) {
-  const options = {
+  const options: MDXRemoteProps['options'] = {
     mdxOptions: {
       remarkPlugins: [remarkGfm],
+      rehypePlugins: [[rehypePrettyCode, { theme: 'one-dark-pro' }]],
     },
   };
   return (
