@@ -23,8 +23,8 @@ The `.reduce()` method (function that is inside an object in JavaScript), by [de
 ![reduce syntax](/assets/images/reduce-in-js1/1.png)
 
 <span style={{ color: 'gray', fontSize: '80%', textAlign: 'center' }}>
-  Fig. 1; from
-  [MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/reduce)
+Fig. 1; from
+[MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/reduce)
 </span>
 
 However, the execution is somewhat less than intuitive (to me, at least) by just looking at the raw code and the doc. Thus comes my version of interpretation on `.reduce()`. Here in part 1 I am only going through its **callback**, **accumulator**, and **currentValue** parameter, for the sake of simplicity.
@@ -41,8 +41,8 @@ The first part is where we define the **callback** function[^1] (function that g
 ![reduce iteration](/assets/images/reduce-in-js1/2.png)
 
 <span style={{ color: 'gray', fontSize: '80%', textAlign: 'center' }}>
-  Fig. 2; from
-  [MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/reduce)
+Fig. 2; from
+[MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/reduce)
 </span>
 
 ```js
