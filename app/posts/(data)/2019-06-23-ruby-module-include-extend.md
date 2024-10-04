@@ -1,5 +1,4 @@
 ---
-layout: post
 title: 'Difference between Include/Extend Modules in Ruby'
 createdAt: 2019-06-23 00:00:00 +0800
 publishedAt: 2019-06-23
