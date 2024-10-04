@@ -1,5 +1,6 @@
 ---
 title: 'Side-To-Side Comparisons between Erlang and TypeScript Programs'
+summary: 'Demonstrate syntax for Erlang and TypeScript programs.'
 createdAt: 2024-02-01 15:45:07 +0800
 publishedAt: 2024-02-01
 categories: [erlang, javascript, typescript]

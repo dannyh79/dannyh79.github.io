@@ -1,5 +1,6 @@
 ---
 title: 'Migrate with AWS - AWS Application Migration Workshop'
+summary: 'Note for how to leverage AWS to migrate on-prem data center to cloud.'
 createdAt: 2020-10-08 20:25:52 +0800
 publishedAt: 2020-10-08
 categories: [workshop, aws]

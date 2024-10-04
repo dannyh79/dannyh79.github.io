@@ -1,5 +1,6 @@
 ---
 title: 'Reinstall GRUB for Arch Linux after Windows 10'
+summary: 'Steps to reinstall GRUB for another OS resides in a Windows machine.'
 createdAt: 2021-10-29 23:32:07 +0800
 publishedAt: 2021-10-29
 categories: [linux, archlinux]

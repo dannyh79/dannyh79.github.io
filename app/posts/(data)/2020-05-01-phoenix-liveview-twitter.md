@@ -1,5 +1,6 @@
 ---
 title: 'Build Twitter clone in 15 minutes with Phoenix LiveView'
+summary: 'Use Elixir Phoenix to build a Twitter clone.'
 createdAt: 2020-05-01 21:11:34 +0800
 publishedAt: 2020-05-01
 categories: [elixir, phoenix, liveview]

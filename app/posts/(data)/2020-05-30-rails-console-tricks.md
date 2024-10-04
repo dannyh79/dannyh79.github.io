@@ -1,5 +1,6 @@
 ---
 title: '原來 Rails Console 可以這樣用'
+summary: 'Rails Console 設定及使用上的技巧。'
 createdAt: 2020-05-30 10:00:00 +0800
 publishedAt: 2020-05-30
 categories: [rails, ruby]

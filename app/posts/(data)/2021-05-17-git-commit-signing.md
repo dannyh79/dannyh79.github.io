@@ -1,5 +1,6 @@
 ---
 title: 'Configure Git Commit Signing with GPG after Changing Email'
+summary: 'Steps to configure git commit signing with a new email.'
 createdAt: 2021-05-17 16:34:56 +0800
 publishedAt: 2021-05-17
 categories: [git]

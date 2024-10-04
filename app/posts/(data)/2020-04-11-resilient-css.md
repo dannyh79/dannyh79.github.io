@@ -1,5 +1,6 @@
 ---
 title: 'How to Write Resilient CSS'
+summary: 'Tips to write CSS that is resilient to spec changes.'
 createdAt: 2020-04-11 17:45:38 +0800
 publishedAt: 2020-04-11
 categories: [css]

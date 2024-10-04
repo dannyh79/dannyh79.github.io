@@ -1,5 +1,6 @@
 ---
 title: 'Terminal-in-Vim Makes You More Productive'
+summary: 'Showcase how Vim terminal works, and its use cases.'
 createdAt: 2020-03-22 13:00:00 +0800
 publishedAt: 2020-03-22
 categories: [vim, editor]

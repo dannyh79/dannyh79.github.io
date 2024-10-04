@@ -1,5 +1,6 @@
 ---
 title: '美商凱德諾藍股份有限公司參訪小記'
+summary: '2020/05/31 美商凱德諾藍股份有限公司參訪記錄。'
 createdAt: 2019-06-10 00:00:00 +0800
 publishedAt: 2019-06-10
 categories: [misc]

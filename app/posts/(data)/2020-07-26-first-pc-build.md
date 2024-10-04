@@ -1,5 +1,6 @@
 ---
 title: 'My First P.C. Build - Ghost S1'
+summary: 'Walk through how I built my P.C., from 0 to 1.'
 createdAt: 2020-07-26 15:49:07 +0800
 publishedAt: 2020-07-26
 categories: [pc, windows, linux]

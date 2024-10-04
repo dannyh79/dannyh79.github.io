@@ -1,5 +1,6 @@
 ---
 title: 'Enforcing MFA/2FA on AWS Users'
+summary: 'AWS IAM Policy template for enforcing MFA on users.'
 createdAt: 2021-05-27 21:00:01 +0800
 publishedAt: 2021-05-27
 categories: [aws, iam]

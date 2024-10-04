@@ -1,5 +1,6 @@
 ---
 title: 'From VS Code to Vim'
+summary: 'How I transioned to Vim from VS Code.'
 createdAt: 2019-10-29 00:00:00 +0800
 publishedAt: 2019-10-29
 categories: [vim]

@@ -1,5 +1,6 @@
 ---
 title: 'Set up a Local LLM for Neovim on Mac'
+summary: 'Steps to plug Ollama into Neovim.'
 createdAt: 2024-02-26 16:09:11 +0800
 publishedAt: 2024-02-26
 categories: [vim, neovim, editor, llm]

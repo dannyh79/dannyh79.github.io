@@ -1,5 +1,6 @@
 ---
 title: 'TIL - Fix PC Bluetooth with a Cold Reboot'
+summary: 'Use cold reboot to fix bluetooth issue from Gigabyte AORUS motherboard.'
 createdAt: 2023-08-23 16:24:25 +0800
 publishedAt: 2023-08-23
 categories: [linux, windows]

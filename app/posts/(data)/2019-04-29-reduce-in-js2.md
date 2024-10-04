@@ -1,5 +1,6 @@
 ---
 title: 'How to Use .reduce() in JavaScript (2/2)'
+summary: "Deep dive into JavaScript's Array.prototype.reduce()."
 createdAt: 2019-04-29 02:00:00 +0800
 publishedAt: 2019-04-29
 categories: [javascript]

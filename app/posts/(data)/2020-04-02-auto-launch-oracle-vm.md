@@ -1,5 +1,6 @@
 ---
 title: (Archived) Launch Free Oracle VMs Automatically
+summary: 'Tutorial for launching Oracle VMs programatically.'
 createdAt: 2020-04-02 13:25:28 +0800
 publishedAt: 2020-04-02
 categories: [misc]

@@ -1,5 +1,6 @@
 ---
 title: 'componentDidMount() Equivalent in React Hook'
+summary: 'React.useEffect() snippet that runs when a component mounts.'
 createdAt: 2019-12-29 23:00:00 +0800
 publishedAt: 2019-12-29
 categories: [react]

@@ -1,5 +1,6 @@
 ---
 title: '總覺得自己在工作上不夠稱職？論冒名頂替者症候群所帶來的影響'
+summary: '冒名頂替者症候群的介紹及我應對之的方式。'
 createdAt: 2019-11-27 01:08:00 +0800
 publishedAt: 2019-11-27
 categories: [mental health]

@@ -1,5 +1,6 @@
 ---
 title: 'How Does Rails Pass Data from Controller to View?'
+summary: 'Illustrate how Rails data flows from controller to view.'
 createdAt: 2019-05-30 00:00:00 +0800
 publishedAt: 2019-05-30
 categories: [rails]

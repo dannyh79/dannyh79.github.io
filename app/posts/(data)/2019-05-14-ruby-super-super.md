@@ -1,5 +1,6 @@
 ---
 title: 'Super, or Super()?'
+summary: 'Illustrate how Ruby "super", "super()", and "super(*args)" behave differently.'
 createdAt: 2019-05-14 00:00:00 +0800
 publishedAt: 2019-05-14
 categories: [ruby]

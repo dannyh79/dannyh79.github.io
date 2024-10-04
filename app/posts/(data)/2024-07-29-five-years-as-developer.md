@@ -1,5 +1,6 @@
 ---
 title: 'Five Years as Software Developer'
+summary: 'Fifth annual software developer summary.'
 createdAt: 2024-07-29 17:55:30 +0800
 publishedAt: 2024-07-29
 categories: [misc]

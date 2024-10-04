@@ -1,5 +1,6 @@
 ---
 title: 'Create a Reusable GitHub Workflow'
+summary: 'GitHub workflow template that can be called from other workflows.'
 createdAt: 2024-09-30 17:03:32 +0800
 publishedAt: 2024-09-30
 categories: [github, devops, ci]

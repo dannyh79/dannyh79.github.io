@@ -1,5 +1,6 @@
 ---
 title: 'Set up Logrotate with Ansible'
+summary: 'Ansible template for logrotate, a tool to rotate server log automatically.'
 createdAt: 2021-02-13 16:03:55 +0800
 publishedAt: 2021-02-13
 categories: [linux]

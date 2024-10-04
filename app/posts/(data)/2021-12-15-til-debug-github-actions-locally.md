@@ -1,5 +1,6 @@
 ---
 title: 'TIL - Debug GitHub Actions Locally'
+summary: 'Use nektos/act to debug GitHub Actions without pushing code to GitHub.'
 createdAt: 2021-12-15 10:23:13 +0800
 publishedAt: 2021-12-15
 categories: [github, ci]

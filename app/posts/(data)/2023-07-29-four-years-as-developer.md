@@ -1,5 +1,6 @@
 ---
 title: 'Four Years as Software Developer'
+summary: 'Fourth annual software developer summary.'
 createdAt: 2023-07-29 14:54:55 +0800
 publishedAt: 2023-07-29
 categories: [misc]

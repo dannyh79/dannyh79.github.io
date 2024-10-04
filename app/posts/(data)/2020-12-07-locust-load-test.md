@@ -1,5 +1,6 @@
 ---
 title: 'Swarm Your Site with Locust'
+summary: 'Use python load test framework, locust, to test web app.'
 createdAt: 2020-12-07 19:01:02 +0800
 publishedAt: 2020-12-07
 categories: [python, testing]

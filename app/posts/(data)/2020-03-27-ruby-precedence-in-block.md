@@ -1,5 +1,6 @@
 ---
 title: 'Difference between "{}" & "do...end" in Ruby'
+summary: 'Showcase how different Ruby code block styles, "{}" and "do...end", behave.'
 createdAt: 2020-03-27 12:00:00 +0800
 publishedAt: 2020-03-27
 categories: [ruby]

@@ -1,5 +1,6 @@
 ---
 title: 'Build React Native App on iOS'
+summary: 'Showcase how to build a React Native app for iOS on MacOS.'
 createdAt: 2020-09-26 20:28:18 +0800
 publishedAt: 2020-09-26
 categories: [react, react-native, ios]

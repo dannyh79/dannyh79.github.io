@@ -1,5 +1,6 @@
 ---
 title: 'Troubleshooting MySQL 5.7 on Arch Linux'
+summary: 'My debugging journey for MySQL issues on Arch Linux.'
 createdAt: 2021-11-07 07:03:33 +0800
 publishedAt: 2021-11-07
 categories: [mysql, linux]

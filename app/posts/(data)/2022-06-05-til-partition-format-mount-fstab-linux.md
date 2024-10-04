@@ -1,5 +1,6 @@
 ---
 title: 'TIL - Partitioning, Formatting, Mounting, and Generating fstab on Linux'
+summary: 'Walk through usage of linux fstab command (fstab stands for filesystem table).'
 createdAt: 2022-06-05 09:54:21 +0800
 publishedAt: 2022-06-05
 categories: [linux]

@@ -1,5 +1,6 @@
 ---
 title: 'Make Your Own ".select()" Method in Ruby'
+summary: 'Use Ruby yield syntax to run arbitray code upon method call.'
 createdAt: 2019-05-23 00:00:00 +0800
 publishedAt: 2019-05-23
 categories: [ruby]

@@ -1,5 +1,6 @@
 ---
 title: 'Track iPhone Restoration Progress on MacOS'
+summary: 'Visualize iPhone restoration progress on MacOS v10.15 (Catalina).'
 createdAt: 2021-04-27 17:09:36 +0800
 publishedAt: 2021-04-27
 categories: [misc, macos]

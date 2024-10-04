@@ -1,5 +1,6 @@
 ---
 title: 'Publish PNPM Project to Cloudflare Pages'
+summary: 'Instrucdtions to publish a PNPM project to Cloudflare Pages.'
 createdAt: 2023-08-18 15:11:45 +0800
 publishedAt: 2023-08-18
 categories: [javascript]

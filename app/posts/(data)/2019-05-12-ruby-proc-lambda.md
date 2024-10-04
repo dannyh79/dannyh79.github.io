@@ -1,5 +1,6 @@
 ---
 title: 'Proc & Lambda in Ruby'
+summary: "Introduction to Ruby's proc and lambda, with side-to-side comparisons."
 createdAt: 2019-05-12 00:00:00 +0800
 publishedAt: 2019-05-12
 categories: [ruby]

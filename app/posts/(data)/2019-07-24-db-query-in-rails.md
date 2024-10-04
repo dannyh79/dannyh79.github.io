@@ -1,5 +1,6 @@
 ---
 title: 'Three Ways to Make Database Queries in Rails'
+summary: 'Introduction of Rails find(), find_by(), and where(), and their behaviors.'
 createdAt: 2019-07-24 00:00:00 +0800
 publishedAt: 2019-07-24
 categories: [rails, active_record]
