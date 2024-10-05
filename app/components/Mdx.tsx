@@ -93,7 +93,10 @@ function Figcaption(props: FigcaptionProps) {
   return <span className={classes} {...restProps} />;
 }
 
-type BlockquoteProps = React.DetailedHTMLProps<React.BlockquoteHTMLAttributes<HTMLQuoteElement>, HTMLQuoteElement>;
+type BlockquoteProps = React.DetailedHTMLProps<
+  React.BlockquoteHTMLAttributes<HTMLQuoteElement>,
+  HTMLQuoteElement
+>;
 
 function Blockquote(props: BlockquoteProps) {
   const { className, ...restProps } = props;
@@ -112,7 +115,7 @@ const components = {
   a: CustomLink,
   Table,
   Figcaption,
-  blockquote: Blockquote
+  blockquote: Blockquote,
 };
 
 export function CustomMDX(props: MDXRemoteProps) {

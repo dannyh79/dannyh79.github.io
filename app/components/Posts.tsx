@@ -19,10 +19,7 @@ export default function BlogPosts(props: Props) {
         })
         .map((post) => (
           <li key={post.slug}>
-            <Link
-              className="flex flex-col space-y-1 mb-4"
-              href={`/${postSubPath}/${post.slug}`}
-            >
+            <Link className="flex flex-col space-y-1 mb-4" href={`/${postSubPath}/${post.slug}`}>
               <div className="w-full flex flex-col space-x-0 md:space-x-2">
                 <h3 className="text-xl text-neutral-900 dark:text-neutral-100 tracking-tight">
                   {post.metadata.title}
