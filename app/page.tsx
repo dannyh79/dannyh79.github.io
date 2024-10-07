@@ -1,6 +1,13 @@
+import { type Metadata } from 'next';
 import BlogPosts from './components/Posts';
 import { siteDescription, title } from './constants';
 import { getBlogPosts } from 'app/posts/utils';
+
+export const metadata: Metadata = {
+  alternates: {
+    canonical: '/',
+  },
+};
 
 export default function Page() {
   const lastThreePosts = getBlogPosts().filter((_, index, posts) => index >= posts.length - 3);

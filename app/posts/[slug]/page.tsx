@@ -1,3 +1,4 @@
+import { type Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { baseUrl, name, postSubPath } from 'app/constants';
 import { CustomMDX } from 'app/components/Mdx';
@@ -14,7 +15,7 @@ type Props = {
   params: { slug: string };
 };
 
-export function generateMetadata({ params }: Props) {
+export function generateMetadata({ params }: Props): Metadata {
   const post = getBlogPosts().find((post) => post.slug === params.slug);
   if (!post) {
     return {};
@@ -26,6 +27,9 @@ export function generateMetadata({ params }: Props) {
   return {
     title,
     description,
+    alternates: {
+      canonical: `/${postSubPath}/${params.slug}`,
+    },
     openGraph: {
       title,
       description,

@@ -1,6 +1,11 @@
-export const metadata = {
+import { type Metadata } from 'next';
+
+export const metadata: Metadata = {
   title: 'About',
   description: `About Danny.`,
+  alternates: {
+    canonical: '/about',
+  },
 };
 
 export default function Page() {
