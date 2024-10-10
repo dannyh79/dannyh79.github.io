@@ -28,7 +28,9 @@ export function Paginator(props: PaginatorProps) {
         </PaginationItem>
         {Array.from({ length: count }, (_, i) => i + START_PAGE).map((page) => (
           <PaginationItem key={page}>
-            <PaginationLink href={{ query: { page } }}>{page}</PaginationLink>
+            <PaginationLink href={{ query: { page } }} isActive={page === currentPage}>
+              {page}
+            </PaginationLink>
           </PaginationItem>
         ))}
         <PaginationItem>
