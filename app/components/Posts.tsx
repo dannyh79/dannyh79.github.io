@@ -1,14 +1,15 @@
+'use client';
+
 import { postSubPath } from 'app/constants';
 import { type Post } from 'app/posts/utils';
 import Link from './Link';
 import { formatDate } from './utils';
 
 type Props = {
-  posts?: Post[];
+  posts: Post[];
 };
 
-export default function BlogPosts(props: Props) {
-  const posts = props.posts ?? getBlogPosts();
+export default function BlogPosts({ posts }: Props) {
   return (
     <ol>
       {posts.sort(byPublishedAtDesc).map((post) => (

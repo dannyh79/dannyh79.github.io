@@ -1,7 +1,7 @@
 import { type Metadata } from 'next';
+import { getBlogPosts } from 'app/posts/utils';
 import BlogPosts from './components/Posts';
 import { siteDescription, title } from './constants';
-import { getBlogPosts } from 'app/posts/utils';
 
 export const metadata: Metadata = {
   alternates: {
