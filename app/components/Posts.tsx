@@ -26,7 +26,7 @@ export default function BlogPosts(props: Props) {
   const { isPaginated = true, posts } = props;
   return (
     <ol>
-      {posts.sort(byPublishedAtDesc).map((post) => (
+      {posts.map((post) => (
         <li key={post.slug}>
           <Link className="flex flex-col space-y-1 mb-4" href={`/${postSubPath}/${post.slug}`}>
             <div className="w-full flex flex-col space-x-0 md:space-x-2">
@@ -61,10 +61,3 @@ export default function BlogPosts(props: Props) {
     </ol>
   );
 }
-
-const byPublishedAtDesc = (a: Post, b: Post): number => {
-  if (new Date(a.metadata.publishedAt) > new Date(b.metadata.publishedAt)) {
-    return -1;
-  }
-  return 1;
-};
