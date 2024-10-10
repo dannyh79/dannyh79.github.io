@@ -2,17 +2,7 @@ import { type Metadata } from 'next';
 import BlogPosts from 'app/components/Posts';
 import { postSubPath } from 'app/constants';
 import { getBlogPosts } from 'app/posts/utils';
-import {
-  PAGE_SIZE,
-  Pagination,
-  PaginationContent,
-  PaginationEllipsis,
-  PaginationItem,
-  PaginationLink,
-  PaginationNext,
-  PaginationPrevious,
-  START_PAGE,
-} from 'app/components/Pagination';
+import Paginator, { PAGE_SIZE, START_PAGE } from 'app/components/Paginator';
 
 export const metadata: Metadata = {
   title: 'Blog',
@@ -43,38 +33,5 @@ export default function Page(props: Props) {
       <BlogPosts posts={postsByPage} />
       <Paginator count={pageCount} page={currentPage} />
     </section>
-  );
-}
-
-type PaginatorProps = {
-  count: number;
-  page: number;
-};
-
-function Paginator(props: PaginatorProps) {
-  const { count, page: currentPage } = props;
-  return (
-    <Pagination>
-      <PaginationContent>
-        <PaginationItem>
-          <PaginationPrevious
-            href={{ query: { page: currentPage === START_PAGE ? START_PAGE : currentPage - 1 } }}
-          />
-        </PaginationItem>
-        {Array.from({ length: count }, (_, i) => i + START_PAGE).map((page) => (
-          <PaginationItem key={page}>
-            <PaginationLink href={{ query: { page } }}>{page}</PaginationLink>
-          </PaginationItem>
-        ))}
-        <PaginationItem>
-          <PaginationEllipsis />
-        </PaginationItem>
-        <PaginationItem>
-          <PaginationNext
-            href={{ query: { page: currentPage === count ? currentPage : currentPage + 1 } }}
-          />
-        </PaginationItem>
-      </PaginationContent>
-    </Pagination>
   );
 }
