@@ -4,6 +4,7 @@ import { baseUrl, name, postSubPath } from 'app/constants';
 import { CustomMDX } from 'app/components/Mdx';
 import { formatDate } from 'app/components/utils';
 import { getBlogPosts } from '../utils';
+import readingTime from 'reading-time';
 
 export async function generateStaticParams() {
   const posts = getBlogPosts();
@@ -21,7 +22,6 @@ export function generateMetadata({ params }: Props): Metadata {
   if (!post) {
     return {};
   }
-
   const { title, publishedAt: publishedTime, summary: description, image } = post.metadata;
   const ogImage = image ? image : `${baseUrl}/og?title=${encodeURIComponent(title)}`;
 
@@ -59,6 +59,7 @@ export default function Blog({ params }: Props) {
     notFound();
   }
 
+  const { text } = readingTime(post.content);
   return (
     <section>
       <script
@@ -86,7 +87,7 @@ export default function Blog({ params }: Props) {
       <h1 className="title font-semibold text-2xl tracking-tighter">{post.metadata.title}</h1>
       <div className="flex justify-between items-center mt-2 mb-8 text-sm">
         <p className="text-sm text-neutral-600 dark:text-neutral-400">
-          {formatDate(post.metadata.publishedAt)}
+          {formatDate(post.metadata.publishedAt)}&nbsp;&nbsp;|&nbsp;&nbsp;{text}
         </p>
       </div>
       <article className="prose">
