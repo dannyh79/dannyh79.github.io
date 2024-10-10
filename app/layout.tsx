@@ -6,6 +6,7 @@ import { GeistSans } from 'geist/font/sans';
 import Footer from './components/Footer';
 import GoogleAnalytics from './components/GoogleAnalytics';
 import Navbar from './components/Nav';
+import { cn } from './components/utils';
 import { baseUrl, siteDescription as description, title } from './constants';
 
 export const metadata: Metadata = {
@@ -36,14 +37,11 @@ export const metadata: Metadata = {
   },
 };
 
-const cx = (...classes: Array<React.HTMLAttributes<HTMLHtmlElement>['className']>) =>
-  classes.filter(Boolean).join(' ');
-
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html
       lang="en"
-      className={cx(
+      className={cn(
         'text-black bg-white dark:text-white dark:bg-black',
         GeistSans.variable,
         GeistMono.variable,
