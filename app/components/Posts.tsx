@@ -1,8 +1,18 @@
 'use client';
 
+import React from 'react';
 import { postSubPath } from 'app/constants';
 import { type Post } from 'app/posts/utils';
 import Link from './Link';
+import {
+  Pagination,
+  PaginationContent,
+  PaginationEllipsis,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from './Pagination';
 import { formatDate } from './utils';
 
 type Props = {
@@ -26,6 +36,22 @@ export default function BlogPosts({ posts }: Props) {
           </Link>
         </li>
       ))}
+      <Pagination>
+        <PaginationContent>
+          <PaginationItem>
+            <PaginationPrevious href="#" />
+          </PaginationItem>
+          <PaginationItem>
+            <PaginationLink href="#">1</PaginationLink>
+          </PaginationItem>
+          <PaginationItem>
+            <PaginationEllipsis />
+          </PaginationItem>
+          <PaginationItem>
+            <PaginationNext href="#" />
+          </PaginationItem>
+        </PaginationContent>
+      </Pagination>
     </ol>
   );
 }
