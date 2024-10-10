@@ -1,7 +1,6 @@
 import {
   Pagination,
   PaginationContent,
-  PaginationEllipsis,
   PaginationItem,
   PaginationLink,
   PaginationNext,
@@ -16,6 +15,7 @@ export type PaginatorProps = {
   page: number;
 };
 
+// TODO: Add PaginationEllipsis
 export function Paginator(props: PaginatorProps) {
   const { count, page: currentPage } = props;
   return (
@@ -33,9 +33,6 @@ export function Paginator(props: PaginatorProps) {
             </PaginationLink>
           </PaginationItem>
         ))}
-        <PaginationItem>
-          <PaginationEllipsis />
-        </PaginationItem>
         <PaginationItem>
           <PaginationNext
             href={{ query: { page: currentPage === count ? currentPage : currentPage + 1 } }}
