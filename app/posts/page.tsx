@@ -1,4 +1,5 @@
 import { type Metadata } from 'next';
+import { notFound } from 'next/navigation';
 import BlogPosts from 'app/components/Posts';
 import { postSubPath } from 'app/constants';
 import { getBlogPosts } from 'app/posts/utils';
@@ -24,9 +25,13 @@ export default function Page(props: Props) {
   } = props;
 
   const posts = getBlogPosts();
+  const pageCount = Math.ceil(posts.length / PAGE_SIZE);
+  if (!!pageQuery && !isValidPageQuery(pageQuery, pageCount)) {
+    notFound();
+  }
+
   const currentPage = isNaN(Number(pageQuery)) ? START_PAGE : Number(pageQuery);
   const postsByPage = posts.slice((currentPage - 1) * PAGE_SIZE, currentPage * PAGE_SIZE);
-  const pageCount = Math.ceil(posts.length / PAGE_SIZE);
   return (
     <section>
       <h1 className="font-semibold text-2xl mb-8 tracking-tighter">All Posts</h1>
@@ -34,4 +39,9 @@ export default function Page(props: Props) {
       <Paginator count={pageCount} page={currentPage} />
     </section>
   );
+}
+
+function isValidPageQuery(value: string, pageCount: number): boolean {
+  const valueNumber = Number(value);
+  return !isNaN(valueNumber) && valueNumber >= START_PAGE && valueNumber <= pageCount;
 }
