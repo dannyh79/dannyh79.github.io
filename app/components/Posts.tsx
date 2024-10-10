@@ -17,9 +17,13 @@ import { formatDate } from './utils';
 
 type Props = {
   posts: Post[];
+
+  /** @defaultValue true */
+  isPaginated?: boolean;
 };
 
-export default function BlogPosts({ posts }: Props) {
+export default function BlogPosts(props: Props) {
+  const { isPaginated = true, posts } = props;
   return (
     <ol>
       {posts.sort(byPublishedAtDesc).map((post) => (
@@ -36,22 +40,24 @@ export default function BlogPosts({ posts }: Props) {
           </Link>
         </li>
       ))}
-      <Pagination>
-        <PaginationContent>
-          <PaginationItem>
-            <PaginationPrevious href="#" />
-          </PaginationItem>
-          <PaginationItem>
-            <PaginationLink href="#">1</PaginationLink>
-          </PaginationItem>
-          <PaginationItem>
-            <PaginationEllipsis />
-          </PaginationItem>
-          <PaginationItem>
-            <PaginationNext href="#" />
-          </PaginationItem>
-        </PaginationContent>
-      </Pagination>
+      {isPaginated && (
+        <Pagination>
+          <PaginationContent>
+            <PaginationItem>
+              <PaginationPrevious href="#" />
+            </PaginationItem>
+            <PaginationItem>
+              <PaginationLink href="#">1</PaginationLink>
+            </PaginationItem>
+            <PaginationItem>
+              <PaginationEllipsis />
+            </PaginationItem>
+            <PaginationItem>
+              <PaginationNext href="#" />
+            </PaginationItem>
+          </PaginationContent>
+        </Pagination>
+      )}
     </ol>
   );
 }
