@@ -17,7 +17,7 @@ export default function Page() {
       <p className="mb-4">{siteDescription}</p>
       <div className="my-8">
         <h2 className="mb-4 text-xl font-semibold tracking-tighter">Lastest Posts</h2>
-        <BlogPosts isPaginated={false} posts={firstThreePosts} />
+        <BlogPosts posts={firstThreePosts} />
       </div>
     </section>
   );
