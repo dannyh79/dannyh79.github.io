@@ -61,6 +61,20 @@ export type Post = {
   content: string;
 };
 
-export function getBlogPosts(): Post[] {
-  return getMDXData(path.join(process.cwd(), 'app', 'posts', '(data)'));
+function byPublishedAtDesc(a: Post, b: Post): number {
+  if (new Date(a.metadata.publishedAt) > new Date(b.metadata.publishedAt)) {
+    return -1;
+  }
+  return 1;
+}
+
+type SorterFunction = (a: Post, b: Post) => number;
+
+/**
+ * Defaults to return posts, sorted by publishedAt in descending order.
+ */
+export function getBlogPosts(sorterFn?: SorterFunction): Post[] {
+  return getMDXData(path.join(process.cwd(), 'app', 'posts', '(data)')).sort(
+    sorterFn ?? byPublishedAtDesc,
+  );
 }
