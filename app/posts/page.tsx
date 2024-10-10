@@ -11,6 +11,7 @@ import {
   PaginationLink,
   PaginationNext,
   PaginationPrevious,
+  START_PAGE,
 } from 'app/components/Pagination';
 
 export const metadata: Metadata = {
@@ -27,15 +28,13 @@ type Props = {
   };
 };
 
-const startPage = 1 as const;
-
 export default function Page(props: Props) {
   const {
     searchParams: { page: pageQuery },
   } = props;
 
   const posts = getBlogPosts();
-  const currentPage = isNaN(Number(pageQuery)) ? startPage : Number(pageQuery);
+  const currentPage = isNaN(Number(pageQuery)) ? START_PAGE : Number(pageQuery);
   const postsByPage = posts.slice((currentPage - 1) * PAGE_SIZE, currentPage * PAGE_SIZE);
   const pageCount = Math.ceil(posts.length / PAGE_SIZE);
   return (
@@ -46,10 +45,10 @@ export default function Page(props: Props) {
         <PaginationContent>
           <PaginationItem>
             <PaginationPrevious
-              href={{ query: { page: currentPage === startPage ? startPage : currentPage - 1 } }}
+              href={{ query: { page: currentPage === START_PAGE ? START_PAGE : currentPage - 1 } }}
             />
           </PaginationItem>
-          {Array.from({ length: pageCount }, (_, i) => i + startPage).map((page) => (
+          {Array.from({ length: pageCount }, (_, i) => i + START_PAGE).map((page) => (
             <PaginationItem key={page}>
               <PaginationLink href={{ query: { page } }}>{page}</PaginationLink>
             </PaginationItem>
