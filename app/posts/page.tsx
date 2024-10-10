@@ -1,6 +1,7 @@
 import { type Metadata } from 'next';
 import BlogPosts from 'app/components/Posts';
 import { postSubPath } from 'app/constants';
+import { getBlogPosts } from 'app/posts/utils';
 
 export const metadata: Metadata = {
   title: 'Blog',
@@ -11,10 +12,11 @@ export const metadata: Metadata = {
 };
 
 export default function Page() {
+  const posts = getBlogPosts();
   return (
     <section>
       <h1 className="font-semibold text-2xl mb-8 tracking-tighter">All Posts</h1>
-      <BlogPosts />
+      <BlogPosts posts={posts} />
     </section>
   );
 }
