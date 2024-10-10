@@ -2,7 +2,8 @@ import { type Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { baseUrl, name, postSubPath } from 'app/constants';
 import { CustomMDX } from 'app/components/Mdx';
-import { formatDate, getBlogPosts } from '../utils';
+import { formatDate } from 'app/components/utils';
+import { getBlogPosts } from '../utils';
 
 export async function generateStaticParams() {
   const posts = getBlogPosts();
