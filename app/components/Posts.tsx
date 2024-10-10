@@ -1,6 +1,7 @@
 import { postSubPath } from 'app/constants';
-import { type Post, formatDate, getBlogPosts } from 'app/posts/utils';
+import { type Post } from 'app/posts/utils';
 import Link from './Link';
+import { formatDate } from './utils';
 
 type Props = {
   posts?: Post[];
