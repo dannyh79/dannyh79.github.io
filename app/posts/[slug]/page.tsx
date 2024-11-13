@@ -1,11 +1,11 @@
 import { type Metadata } from 'next';
 import { notFound } from 'next/navigation';
+import readingTime from 'reading-time';
 import { baseUrl, name, postSubPath } from 'app/constants';
 import { CustomMDX } from 'app/components/Mdx';
 import { badgeVariants } from 'app/components/ui/badge';
 import { formatDate } from 'app/components/utils';
 import { getBlogPosts } from '../utils';
-import readingTime from 'reading-time';
 
 export async function generateStaticParams() {
   const posts = getBlogPosts();
