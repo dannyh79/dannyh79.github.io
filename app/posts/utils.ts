@@ -7,6 +7,7 @@ type Metadata = {
   publishedAt: string;
   summary: string;
   image?: string;
+  categories?: string[];
 };
 
 function getMDorMDXFiles(dir: fs.PathLike) {
