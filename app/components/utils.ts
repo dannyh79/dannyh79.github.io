@@ -15,6 +15,16 @@ export function formatDate(
   }
   const targetDate = typeof date === 'string' ? new Date(date) : date;
 
+  const fullDate = targetDate.toLocaleString('en-us', {
+    month: 'long',
+    day: 'numeric',
+    year: 'numeric',
+  });
+
+  if (!includeRelative) {
+    return fullDate;
+  }
+
   const yearsAgo = currentDate.getFullYear() - targetDate.getFullYear();
   const monthsAgo = currentDate.getMonth() - targetDate.getMonth();
   const daysAgo = currentDate.getDate() - targetDate.getDate();
@@ -28,16 +38,6 @@ export function formatDate(
     formattedDate = `${daysAgo}d ago`;
   } else {
     formattedDate = 'Today';
-  }
-
-  const fullDate = targetDate.toLocaleString('en-us', {
-    month: 'long',
-    day: 'numeric',
-    year: 'numeric',
-  });
-
-  if (!includeRelative) {
-    return fullDate;
   }
 
   return `${fullDate} (${formattedDate})`;
