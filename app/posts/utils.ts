@@ -1,4 +1,5 @@
 import fs from 'fs';
+import matter from 'gray-matter';
 import path from 'path';
 
 type Metadata = {
@@ -8,33 +9,8 @@ type Metadata = {
   image?: string;
 };
 
-function parseFrontmatter(fileContent: string) {
-  const frontmatterRegex = /---\s*([\s\S]*?)\s*---/;
-  const match = frontmatterRegex.exec(fileContent);
-  const frontMatterBlock = match![1];
-  const content = fileContent.replace(frontmatterRegex, '').trim();
-  const frontMatterLines = frontMatterBlock.trim().split('\n');
-  const metadata: Partial<Metadata> = {};
-
-  frontMatterLines.forEach((line) => {
-    const [key, ...valueArr] = line.split(': ');
-    const value = valueArr
-      .join(': ')
-      .trim()
-      .replace(/^['"](.*)['"]$/, '$1');
-    metadata[key.trim() as keyof Metadata] = value;
-  });
-
-  return { metadata: metadata as Metadata, content };
-}
-
 function getMDorMDXFiles(dir: fs.PathLike) {
   return fs.readdirSync(dir).filter((file) => ['.md', '.mdx'].includes(path.extname(file)));
-}
-
-function readMDXFile(filePath: fs.PathOrFileDescriptor) {
-  const rawContent = fs.readFileSync(filePath, 'utf-8');
-  return parseFrontmatter(rawContent);
 }
 
 function trimDatePrefixFromString(str: string): string {
@@ -44,11 +20,11 @@ function trimDatePrefixFromString(str: string): string {
 function getMDXData(dir: fs.PathLike) {
   const files = getMDorMDXFiles(dir);
   return files.map((file) => {
-    const { metadata, content } = readMDXFile(path.join(dir.toString(), file));
+    const { data, content } = matter.read(path.join(dir.toString(), file));
     const filename = path.basename(file, path.extname(file));
 
     return {
-      metadata,
+      metadata: data as Metadata,
       slug: trimDatePrefixFromString(filename),
       content,
     };
