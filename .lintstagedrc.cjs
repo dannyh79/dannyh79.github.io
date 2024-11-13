@@ -9,5 +9,6 @@ const buildEslintCommand = (filenames) =>
 
 module.exports = {
   '*.{js,cjs,jsx,ts,tsx}': [buildEslintCommand],
+  '*.{js,cjs,jsx,ts,tsx}': 'vitest --run --passWithNoTests',
   '*.{cjs,css,js,json,jsx,md,mdx,ts,tsx}': 'prettier -w',
 };
