@@ -1,10 +1,11 @@
 import { type Metadata } from 'next';
 import { notFound } from 'next/navigation';
+import readingTime from 'reading-time';
 import { baseUrl, name, postSubPath } from 'app/constants';
 import { CustomMDX } from 'app/components/Mdx';
+import { badgeVariants } from 'app/components/ui/badge';
 import { formatDate } from 'app/components/utils';
 import { getBlogPosts } from '../utils';
-import readingTime from 'reading-time';
 
 export async function generateStaticParams() {
   const posts = getBlogPosts();
@@ -85,6 +86,13 @@ export default function Blog({ params }: Props) {
         }}
       />
       <h1 className="title font-semibold text-2xl tracking-tighter">{post.metadata.title}</h1>
+      {post.metadata.categories && (
+        <div className="flex items-center mt-2 gap-1">
+          {post.metadata.categories.toSorted().map((category, i) => (
+            <CategoryBadge key={category + i} label={category} />
+          ))}
+        </div>
+      )}
       <div className="flex justify-between items-center mt-2 mb-8 text-sm">
         <p className="text-sm text-neutral-600 dark:text-neutral-400">
           {formatDate(post.metadata.publishedAt)}&nbsp;&nbsp;|&nbsp;&nbsp;{text}
@@ -95,4 +103,8 @@ export default function Blog({ params }: Props) {
       </article>
     </section>
   );
+}
+
+function CategoryBadge({ label }: { label: string }) {
+  return <span className={[badgeVariants(), 'lowercase'].join(' ')}>{label}</span>;
 }
