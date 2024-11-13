@@ -8,6 +8,7 @@ import {
   PaginationPrevious,
 } from './Pagination';
 import { MAX_VISIBLE, START_PAGE } from './constants';
+import { getRange } from './utils';
 
 export * from './constants';
 
@@ -15,12 +16,6 @@ export type PaginatorProps = {
   count: number;
   page: number;
 };
-
-export function getRange(length: number, current: number, rangeLimit: number): number[] {
-  const isAtFirst = current === 1;
-  const isAtLast = current === rangeLimit;
-  return Array.from({ length }, (_, i) => i + (isAtFirst ? current : current - (isAtLast ? 2 : 1)));
-}
 
 export function Paginator(props: PaginatorProps) {
   const { count, page: currentPage } = props;
