@@ -7,7 +7,7 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from './Pagination';
-import { START_PAGE } from './constants';
+import { MAX_VISIBLE, START_PAGE } from './constants';
 
 export * from './constants';
 
@@ -15,8 +15,6 @@ export type PaginatorProps = {
   count: number;
   page: number;
 };
-
-const maxVisible: number = 3;
 
 export function getRange(length: number, current: number, rangeLimit: number): number[] {
   const isAtFirst = current === 1;
@@ -26,7 +24,7 @@ export function getRange(length: number, current: number, rangeLimit: number): n
 
 export function Paginator(props: PaginatorProps) {
   const { count, page: currentPage } = props;
-  const range = getRange(maxVisible, currentPage, count);
+  const range = getRange(MAX_VISIBLE, currentPage, count);
   return (
     <Pagination>
       <PaginationContent>
@@ -35,7 +33,7 @@ export function Paginator(props: PaginatorProps) {
             href={{ query: { page: currentPage === START_PAGE ? START_PAGE : currentPage - 1 } }}
           />
         </PaginationItem>
-        {currentPage - Math.ceil(maxVisible / 2) > 0 && <PaginationEllipsis />}
+        {currentPage - Math.ceil(MAX_VISIBLE / 2) > 0 && <PaginationEllipsis />}
         {range.map((page) => (
           <PaginationItem key={page}>
             <PaginationLink href={{ query: { page } }} isActive={page === currentPage}>
@@ -43,7 +41,7 @@ export function Paginator(props: PaginatorProps) {
             </PaginationLink>
           </PaginationItem>
         ))}
-        {currentPage + Math.ceil(maxVisible / 2) <= count && <PaginationEllipsis />}
+        {currentPage + Math.ceil(MAX_VISIBLE / 2) <= count && <PaginationEllipsis />}
         <PaginationItem>
           <PaginationNext
             href={{ query: { page: currentPage === count ? currentPage : currentPage + 1 } }}
