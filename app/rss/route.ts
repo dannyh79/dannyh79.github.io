@@ -1,6 +1,9 @@
 import { baseUrl, postSubPath, title } from 'app/constants';
 import { getBlogPosts } from 'app/posts/utils';
 
+// Next v15 bug; see https://github.com/vercel/next.js/issues/68667
+export const dynamic = 'force-static';
+
 export async function GET() {
   const allBlogs = getBlogPosts();
 

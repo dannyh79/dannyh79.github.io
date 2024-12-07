@@ -1,6 +1,9 @@
 import { baseUrl, postSubPath } from './constants';
 import { getBlogPosts } from './posts/utils';
 
+// Next v15 bug; see https://github.com/vercel/next.js/issues/68667
+export const dynamic = 'force-static';
+
 export default async function sitemap() {
   const blogs = getBlogPosts().map((post) => ({
     url: `${baseUrl}/${postSubPath}/${post.slug}`,
