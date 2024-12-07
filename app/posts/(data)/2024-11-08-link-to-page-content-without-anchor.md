@@ -1,5 +1,5 @@
 ---
-title: 'TIL: Link to Specific Content on a Page without An Anchor'
+title: 'TIL - Link to Specific Content on a Page without An Anchor'
 summary: 'Add `#:~:text=<target%20text>` at the end of URL to link to specific content on a page.'
 createdAt: 2024-11-08 12:10:20 +0800
 publishedAt: 2024-11-08
