@@ -1,6 +1,6 @@
 import React from 'react';
 import Image, { type ImageProps } from 'next/image';
-import { MDXRemote, type MDXRemoteProps } from 'next-mdx-remote/rsc';
+import { MDXRemote, type MDXRemoteProps } from 'next-mdx-remote-client/rsc';
 import rehypePrettyCode from 'rehype-pretty-code';
 import remarkGfm from 'remark-gfm';
 import Link from './Link';
