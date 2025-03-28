@@ -1,0 +1,16 @@
+name: Setup pnpm environment
+
+runs:
+  using: composite
+  steps:
+    - uses: pnpm/action-setup@v4
+      with:
+        run_install: false
+
+    - uses: actions/setup-node@v4
+      with:
+        node-version: ${{ env.NODE_VERSION }}
+        cache: pnpm
+
+    - run: pnpm i --frozen-lockfile
+      shell: bash

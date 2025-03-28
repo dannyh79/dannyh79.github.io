@@ -25,16 +25,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - uses: pnpm/action-setup@v4
-        with:
-          run_install: false
-
-      - uses: actions/setup-node@v4
-        with:
-          node-version: ${{ env.NODE_VERSION }}
-          cache: pnpm
-
-      - run: pnpm i --frozen-lockfile
+      - uses: ./.github/actions/setup-pnpm-env
 
       - run: pnpm vitest --run --passWithNoTests
 
@@ -45,16 +36,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - uses: pnpm/action-setup@v4
-        with:
-          run_install: false
-
-      - uses: actions/setup-node@v4
-        with:
-          node-version: ${{ env.NODE_VERSION }}
-          cache: pnpm
-
-      - run: pnpm i --frozen-lockfile
+      - uses: ./.github/actions/setup-pnpm-env
 
       - name: Extract Playwright Version
         id: extract-playwright-version
