@@ -2,7 +2,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack",
-    "format": "prettier -w .",
+    "format": "prettier -w --log-level warn .",
     "lint": "next lint",
     "lint:fix": "next lint --fix",
     "test": "vitest --run --passWithNoTests",
