@@ -10,7 +10,13 @@ Use `#:~:text=<target%20text>` (case insensitive) to highlight the text portion 
 
 For example, clicking [https://chenghsuan.me/#:~:text=yes%20danny%20blogs](https://chenghsuan.me/#:~:text=yes%20danny%20blogs) yields the following:
 
-![Page with target text highlighted](/assets/images/link-to-page-content-without-anchor/1.png)
+<Image
+  src="/assets/images/link-to-page-content-without-anchor/1.png"
+  alt="Page with target text highlighted"
+  width={800}
+  height={450}
+  isFirst
+/>
 
 ## Refs
 

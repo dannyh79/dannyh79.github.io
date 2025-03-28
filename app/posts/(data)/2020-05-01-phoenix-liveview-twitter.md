@@ -6,7 +6,7 @@ publishedAt: 2020-05-01
 categories: [elixir, phoenix, liveview]
 ---
 
-![Twitter clone in Phoenix](/assets/images/phoenix-liveview-twitter/1.png)
+<Image src="/assets/images/phoenix-liveview-twitter/1.png" alt="Twitter clone in Phoenix" isFirst width={800} height={450} />
 
 <Figcaption>
     A snapshot of my PhxChirp ([repo](https://github.com/dannyh79/phx_chirp))

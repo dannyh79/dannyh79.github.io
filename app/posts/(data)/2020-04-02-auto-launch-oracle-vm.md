@@ -22,7 +22,12 @@ Oracle launched [`Always Free Eligible` cloud services](https://www.oracle.com/c
 
 #### 1. Once Logged in, Click "Create a VM instance"
 
-![to create VM instance page](/assets/images/autolaunch-oracle-vm/1.png)
+<Image
+  src="/assets/images/autolaunch-oracle-vm/1.png"
+  alt="to create VM instance page"
+  width={800}
+  height={450}
+/>
 
 #### 2. Try Create an Instance
 
@@ -30,7 +35,12 @@ If you need help on the SSH part, see Oracle's [Creating an SSH Key Pair on the 
 
 > I use CentOS 7 for OS image here.
 
-![create an instance](/assets/images/autolaunch-oracle-vm/2.png)
+<Image
+  src="/assets/images/autolaunch-oracle-vm/2.png"
+  alt="create an instance"
+  width={600}
+  height={800}
+/>
 
 #### 3. Passing or Failing
 
@@ -43,7 +53,12 @@ Back on "Create a VM instance" page, open browser's developer tool (Mine is Chro
 
 When all is set, re-do step 2, click "Create" button, quickly move to the developer tool to find the request with a `500` status, and click its name.
 
-![gather info for creating an instance](/assets/images/autolaunch-oracle-vm/3.png)
+<Image
+  src="/assets/images/autolaunch-oracle-vm/3.png"
+  alt="gather info for creating an instance"
+  width={800}
+  height={450}
+/>
 
 Click "view source" in "Request Payload", and scrape values of the following keys out to your favorite text editor:
 
@@ -59,9 +74,27 @@ imageId: "..."
 #### 4-2. Gather Necessary User/Tenancy Info
 
 Copy the values of "ocid" for `user` and `tenancy`:
-![go to users page](/assets/images/autolaunch-oracle-vm/4.png)
-![get user id](/assets/images/autolaunch-oracle-vm/5.png)
-![get tenancy id](/assets/images/autolaunch-oracle-vm/6.png)
+
+<div className="flex flex-col gap-2">
+  <Image
+    src="/assets/images/autolaunch-oracle-vm/4.png"
+    alt="go to users page"
+    width={800}
+    height={450}
+  />
+  <Image
+    src="/assets/images/autolaunch-oracle-vm/5.png"
+    alt="get user id"
+    width={800}
+    height={600}
+  />
+  <Image
+    src="/assets/images/autolaunch-oracle-vm/6.png"
+    alt="get tenancy id"
+    width={800}
+    height={450}
+  />
+</div>
 
 #### 5-1. Set up CLI for OCI
 
@@ -73,17 +106,34 @@ Once installed, run `$ oci setup config{:sh}` and enter your user OCID, tenancy 
 
 > I hit "enter" to the rest of the options to use the default.
 
-![get tenancy id](/assets/images/autolaunch-oracle-vm/7.png)
+<Image
+  src="/assets/images/autolaunch-oracle-vm/7.png"
+  alt="Set up CLI for OCI"
+  width={900}
+  height={1600}
+/>
 
 #### 5-2. Connecting CLI to OCI
 
 Find your `oci_api_key_public.pem` (path is in `Find your public written to:` in step 5-1), and add it to your profile through `Add Public Key` option:
-![put public key to OCI](/assets/images/autolaunch-oracle-vm/8.png)
+
+<Image
+  src="/assets/images/autolaunch-oracle-vm/8.png"
+  alt="Connect CLI to OCI"
+  width={600}
+  height={400}
+/>
 
 #### 5-3. Verify
 
 The setup is done when you see the below using `$ oci iam availability-domain list{:sh}`:
-![put public key to OCI](/assets/images/autolaunch-oracle-vm/9.png)
+
+<Image
+  src="/assets/images/autolaunch-oracle-vm/9.png"
+  alt="Verify the result from terminal"
+  width={800}
+  height={450}
+/>
 
 #### 6. Try Create Instances via CLI
 
@@ -100,7 +150,13 @@ $ oci compute instance launch --availability-domain _availabilityDomain_ \
 ```
 
 You should see the following error from the response if it works as expected:
-![out of host capacity error](/assets/images/autolaunch-oracle-vm/10.png)
+
+<Image
+  src="/assets/images/autolaunch-oracle-vm/10.png"
+  alt="out of host capacity error"
+  width={800}
+  height={450}
+/>
 
 #### 7-1. Save the Command as Shell Script
 
