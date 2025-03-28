@@ -12,5 +12,13 @@ runs:
         node-version: ${{ env.NODE_VERSION }}
         cache: pnpm
 
+    - name: Cache pnpm store
+      uses: actions/cache@v4
+      with:
+        path: ~/.pnpm-store
+        key: pnpm-store-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}
+        restore-keys: |
+          pnpm-store-${{ runner.os }}-
+
     - run: pnpm i --frozen-lockfile
       shell: bash
