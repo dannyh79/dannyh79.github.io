@@ -39,10 +39,6 @@ jobs:
       - run: pnpm vitest --run --passWithNoTests
 
   e2e:
-    # Prevent the job from running when pushing to the 'main' branch
-    if: >
-      github.event_name != 'push' || github.ref != 'refs/heads/main'
-
     timeout-minutes: 10
     runs-on: ubuntu-latest
 
