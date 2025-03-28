@@ -21,7 +21,13 @@ _Example from [W3School](https://www.w3schools.com/jsref/jsref_reduce.asp) and [
 
 The `.reduce(){:js}` method (function that is inside an object in JavaScript), by [definition](https://www.w3schools.com/jsref/jsref_reduce.asp), **is to reduce an array into a single value.**
 
-![reduce syntax](/assets/images/reduce-in-js1/1.png)
+<Image
+  src="/assets/images/reduce-in-js1/1.png"
+  alt="reduce syntax"
+  width={800}
+  height={600}
+  isFirst
+/>
 
 <Figcaption>
     Fig. 1; from [MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/reduce)
@@ -38,7 +44,12 @@ function getSum(total, num) {
 
 The first part is where we define the **callback** function[^1] (function that gets called after being defined) for later use in `.reduce(){:js}`. Inside of it we have the **accumulator** (_total_ in example), the container that stores the sum of the previous values in each iteration, and **currentValue** (_num_), the number to be added in current cycle. The two works like this when the callback is called in `.reduce(){:js}`:
 
-![reduce iteration](/assets/images/reduce-in-js1/2.png)
+<Image
+  src="/assets/images/reduce-in-js1/2.png"
+  alt="reduce iteration"
+  width={1600}
+  height={450}
+/>
 
 <Figcaption>
     Fig. 2; from [MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/reduce)

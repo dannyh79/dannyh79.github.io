@@ -26,7 +26,12 @@ categories: [mental health]
 
 ## 冒名頂替者症候群如何影響你我
 
-![Model of the imposter cycle](/assets/images/imposter-syndrome/1.png)
+<Image
+  src="/assets/images/imposter-syndrome/1.png"
+  alt="Model of the imposter cycle"
+  width={800}
+  height={600}
+/>
 
 <Figcaption>
     Clance’s (1985) model of the Imposter Cycle, as depicted in [Sakulku & Alexander (2011)](https://www.apa.org/science/about/psa/2018/09/imposter-syndrome)

@@ -6,7 +6,12 @@ publishedAt: 2020-03-22
 categories: [vim, editor]
 ---
 
-![Terminal mode in Vim](/assets/images/vim8-terminal/1.png)
+<Image
+  src="/assets/images/vim8-terminal/1.png"
+  alt="Terminal mode in Vim"
+  width={1600}
+  height={900}
+/>
 
 ## TLDR
 

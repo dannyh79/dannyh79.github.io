@@ -6,13 +6,25 @@ publishedAt: 2019-10-29
 categories: [vim]
 ---
 
-![illustration of terminal on 2019/12/28](/assets/images/vscode-to-vim/1.png)
+<Image
+  src="/assets/images/vscode-to-vim/1.png"
+  alt="illustration of terminal on 2019/12/28"
+  width={1600}
+  height={900}
+  isFirst
+/>
 
 <Figcaption>
     Setup as of 2019/12/28; W.I.P. dots can be found [HERE](https://gist.github.com/dannyh79/157ad3160ff92b5791019efd2e7afec9)
 </Figcaption>
 
-![illustration of terminal on 2019/10/28](/assets/images/vscode-to-vim/2.png)
+<Image
+  src="/assets/images/vscode-to-vim/2.png"
+  alt="illustration of terminal on 2019/10/28"
+  width={1600}
+  height={900}
+  isFirst
+/>
 
 <Figcaption>
     Initial Setup on 2019/10/28 (Vim, Tmux)

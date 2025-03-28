@@ -182,11 +182,21 @@ categories: [react, react-native, ios]
 
 - In Xcode, select the emulator of your choice (I choose iPhone 8) then build the app
 
-  ![Select a emulator then build app](/assets/images/build-react-native-ios-app/1.jpg)
+  <Image
+    src="/assets/images/build-react-native-ios-app/1.jpg"
+    alt="Select a emulator then build app"
+    width={800}
+    height={450}
+  />
 
 - And Voilà! You have built your first React Native iOS app!
 
-  ![Successfully initialized iOS app](/assets/images/build-react-native-ios-app/2.jpg)
+  <Image
+    src="/assets/images/build-react-native-ios-app/2.jpg"
+    alt="Successfully initialized iOS app"
+    width={900}
+    height={1600}
+  />
 
 ## Refs
 

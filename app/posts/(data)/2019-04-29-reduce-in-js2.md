@@ -9,7 +9,12 @@ categories: [javascript]
 In this section we are picking up what is left from [Part1](2019-04-24-reduce-in-js1),
 **initialValue** and **currentIndex** parameter in `.reduce(){:js}`, as well as some of `.reduce(){:js}`'s application.
 
-![reduce syntax](/assets/images/reduce-in-js2/1.png)
+<Image
+  src="/assets/images/reduce-in-js2/1.png"
+  alt="reduce syntax"
+  width={800}
+  height={600}
+/>
 
 <Figcaption>
     Fig. 1; from [MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/reduce)
@@ -28,13 +33,23 @@ console.log(arr.reduce(getSum));
 console.log(arr.reduce(getSum, 10));
 ```
 
-![reduce iteration1](/assets/images/reduce-in-js2/2.png)
+<Image
+  src="/assets/images/reduce-in-js2/2.png"
+  alt="reduce iteration1"
+  width={1600}
+  height={450}
+/>
 
 <Figcaption>
     Fig. 2; from [MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/reduce)
 </Figcaption>
 
-![reduce iteration2](/assets/images/reduce-in-js2/3.png)
+<Image
+  src="/assets/images/reduce-in-js2/3.png"
+  alt="reduce iteration2"
+  width={1600}
+  height={450}
+/>
 
 <Figcaption>
     Fig. 3; from [MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/reduce)

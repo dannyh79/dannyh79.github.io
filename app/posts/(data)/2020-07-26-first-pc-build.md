@@ -6,7 +6,7 @@ publishedAt: 2020-07-26
 categories: [pc, windows, linux]
 ---
 
-![Cover photo](/assets/images/first-pc-build/01.jpg)
+<Image src="/assets/images/first-pc-build/01.jpg" alt="Cover photo" isFirst width={800} height={600} />
 
 <Figcaption>
     Parts used for this build
@@ -65,61 +65,76 @@ After the "case", it still took me about another month to get the motherboard in
 
 Rather than just putting all things together, cranking up the P.C., and hoping things work, parts must be tested, if possible, individually. [The tutorial](https://youtu.be/9206E_rOduU) by [JayzTwoCents](https://www.youtube.com/channel/UCkWQ0gDrqOCarmUKmppD7GQ) showed me, a first-time builder, how new parts are supposed to be tested.
 
-<div className="flex flex-wrap gap-2 justify-center">
-  <img
+<div className="grid grid-cols-2 items-center gap-2">
+  <Image
     src="/assets/images/first-pc-build/02.jpg"
     alt="CPU, RAM, and SSD on motherboard"
     title="CPU, RAM, and SSD on motherboard"
-    width="45%"
+    width={300}
+    height={400}
   />
-  <img src="/assets/images/first-pc-build/03.jpg" alt="CPU fan" title="The CPU fan" width="45%" />
-  <img
+  <Image
+    src="/assets/images/first-pc-build/03.jpg"
+    alt="CPU fan"
+    title="CPU fan"
+    width={300}
+    height={400}
+  />
+  <Image
     src="/assets/images/first-pc-build/04.jpg"
     alt="Back of CPU fan with bracket"
-    title="The back of CPU fan, with bracket"
-    width="45%"
+    title="Back of CPU fan with bracket"
+    width={300}
+    height={400}
   />
-  <img
+  <Image
     src="/assets/images/first-pc-build/05.jpg"
     alt="CPU fan & GPU on motherboard"
     title="CPU fan and GPU assembled onto motherboard"
-    width="45%"
+    width={300}
+    height={400}
   />
-  <img
+  <Image
     src="/assets/images/first-pc-build/06.jpg"
     alt="Connecting power to PSU"
     title="Connecting power to PSU"
-    width="45%"
+    width={300}
+    height={400}
   />
-  <img
+  <Image
     src="/assets/images/first-pc-build/09.jpg"
     alt="Connecting power to PSU"
     title="Connecting power to PSU"
-    width="45%"
+    width={400}
+    height={300}
   />
-  <img
+  <Image
     src="/assets/images/first-pc-build/10.jpg"
     alt="Computer powers on"
     title="Yes! It runs!"
-    width="45%"
+    width={400}
+    height={300}
   />
-  <img
+  <Image
     src="/assets/images/first-pc-build/12.jpg"
     alt="Putting another M.2 SSD onto motherboard"
     title="Putting another M.2 SSD onto motherboard"
-    width="45%"
+    width={300}
+    height={400}
   />
-  <img
+  <Image
     src="/assets/images/first-pc-build/17.jpg"
     alt="Setting up Windows 10"
     title="Setting up Windows 10"
-    width="45%"
+    width={400}
+    height={300}
   />
-  <img
+  <Image
     src="/assets/images/first-pc-build/18.jpg"
     alt="Trying to download games"
     title="Trying to download some games"
-    width="45%"
+    width={300}
+    height={400}
   />
 </div>
 
@@ -133,30 +148,34 @@ Gotta admit that the problems I bumped into while making the build are really a 
 
 Tries after tries, I just could not get GPU to work on PCIe extension cord. I had to use my PC without the case, because Ghost S1 will not fit without the extension cord....
 
-<div className="flex flex-wrap gap-2 justify-center">
-  <img
+<div className="grid grid-cols-2 items-center gap-2">
+  <Image
     src="/assets/images/first-pc-build/27.jpg"
     alt="Testing PCIe extension cord for GPU"
     title="Testing PCIe extension cord"
-    width="45%"
+    width={300}
+    height={400}
   />
-  <img
+  <Image
     src="/assets/images/first-pc-build/26.jpg"
     alt="GPU does not work on extension cord"
     title="GPU just did not work on extension cord"
-    width="45%"
+    width={300}
+    height={400}
   />
-  <img
+  <Image
     src="/assets/images/first-pc-build/28.jpg"
     alt="Powering P.C. on without a case"
     title="Powering P.C. on without a case works"
-    width="45%"
+    width={400}
+    height={300}
   />
-  <img
+  <Image
     src="/assets/images/first-pc-build/29.jpg"
     alt="Using P.C. without a case"
     title={`"OK I give up. Guess I'll just use my P.C. like this then"`}
-    width="45%"
+    width={400}
+    height={300}
   />
 </div>
 
@@ -169,11 +188,12 @@ Lesson learned - never touch anything while the P.C. is still running.
 The cables did not really fit when I wanted to put the side panel of the case back in. Just when I tried to stuck the cables closer to motherboard, I felt excruciating pain came from my left ring finger. Immediately, I pulled my hand out, and saw a blade of the CPU fan stuck in my finger....
 
 <div className="flex justify-center">
-  <img
+  <Image
     src="/assets/images/first-pc-build/30.jpg"
     alt="Broken CPU fan"
     title="Broken CPU fan"
-    width="45%"
+    width={300}
+    height={400}
   />
 </div>
 
@@ -190,10 +210,11 @@ For now, I run my build without panels and lid on when I figure it might probabl
 Building a computer without any prior knowledge is not always a smooth sail, and can be hard at times. Yet, one thing is for sure that nothing compares to the sense of achievement when you see your first-ever build boots up. ;)
 
 <div className="flex justify-center">
-  <img
+  <Image
     src="/assets/images/first-pc-build/31.jpg"
     alt="Ghost S1 on the run"
     title="The finished product"
-    width="45%"
+    width={300}
+    height={400}
   />
 </div>
