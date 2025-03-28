@@ -48,8 +48,21 @@ function CustomLink(props: CustomLinkProps) {
   return <a target="_blank" rel="noopener noreferrer" {...props} />;
 }
 
-function RoundedImage(props: ImageProps) {
-  return <Image className="rounded-lg" {...props} alt={props.alt || 'Illustration.'} />;
+type RoundedImageProps = Omit<ImageProps, 'fill' | 'loading'> & {
+  isFirst?: boolean;
+};
+
+function RoundedImage(props: RoundedImageProps) {
+  const { isFirst, alt, ...restProps } = props;
+
+  return (
+    <Image
+      className="rounded-lg"
+      alt={alt || 'Illustration.'}
+      {...restProps}
+      loading={isFirst ? 'eager' : 'lazy'}
+    />
+  );
 }
 
 function slugify(str: string) {
