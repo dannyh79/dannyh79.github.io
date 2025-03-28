@@ -16,7 +16,7 @@ test('has Latest Posts section', async ({ page }) => {
 
   await page.goto(url);
 
-  await expect(page.getByRole('heading', { name: 'Lastest Posts' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Latest Posts' })).toBeVisible();
 
   const latestPosts = posts.slice(0, Math.min(posts.length, 3));;
   for (const post of latestPosts) {
