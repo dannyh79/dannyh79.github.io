@@ -2,7 +2,8 @@
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack",
-    "format": "prettier -w --log-level warn .",
+    "format": "prettier -w --log-level warn",
+    "format:all": "prettier -w --log-level warn .",
     "lint": "next lint",
     "lint:fix": "next lint --fix",
     "test": "vitest --run --passWithNoTests",
