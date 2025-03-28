@@ -6,6 +6,7 @@
     "lint": "next lint",
     "lint:fix": "next lint --fix",
     "test": "vitest --run --passWithNoTests",
+    "test:e2e": "playwright test",
     "build": "next build",
     "start": "next start"
   },
@@ -28,6 +29,7 @@
     "typescript": "^5.8.2"
   },
   "devDependencies": {
+    "@playwright/test": "^1.51.1",
     "@tailwindcss/postcss": "^4.0.17",
     "@types/node": "^22.13.14",
     "@types/react": "^19.0.12",

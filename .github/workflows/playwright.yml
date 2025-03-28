@@ -1,0 +1,61 @@
+name: Playwright Tests
+
+on:
+  push:
+    branches: [main]
+    paths-ignore:
+      - 'docs/**'
+      - '**/README.md'
+  pull_request:
+    branches: [main]
+    paths-ignore:
+      - 'docs/**'
+      - '**/README.md'
+
+env:
+  CI: true
+  NODE_VERSION: 21.x
+  E2E_DEVICES: '["chrome"]'
+
+jobs:
+  e2e:
+    # Prevent the job from running when pushing to the 'main' branch
+    if: >
+      github.event_name != 'push' || github.ref != 'refs/heads/main'
+
+    timeout-minutes: 10
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          run_install: false
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: pnpm
+
+      - run: pnpm i --frozen-lockfile
+
+      - name: Store Playwright's Version
+        run: |
+          PLAYWRIGHT_VERSION=$(yarn list -p '@playwright/test' | grep @playwright | sed 's/.*@//')
+          echo "Playwright's Version: ${{ env.PLAYWRIGHT_VERSION }}"
+          echo "PLAYWRIGHT_VERSION=${{ env.PLAYWRIGHT_VERSION }}" >> $GITHUB_ENV
+
+      - name: Cache Playwright Browsers for Playwright's Version
+        id: cache-playwright-browsers
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-browsers-${{ env.PLAYWRIGHT_VERSION }}-${{ join(fromJson(env.E2E_DEVICES), '-') }}
+
+      - name: Install Playwright Browsers
+        if: steps.cache-playwright-browsers.outputs.cache-hit != 'true'
+        # flag `--only-shell` ref: https://github.com/microsoft/playwright/issues/33566
+        run: pnpm playwright install --only-shell --with-deps ${{ join(fromJson(env.E2E_DEVICES), ' ') }}
+
+      - run: pnpm exec playwright test
