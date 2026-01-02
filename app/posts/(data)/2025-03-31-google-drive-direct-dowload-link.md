@@ -11,7 +11,6 @@ categories: [misc, gcp]
 Use the below URL formats to share (public) file download links that skip Google Drive UI with someone:
 
 - For Google Docs, use `https://docs.google.com/document/d/FILE_ID/export?format=FORMAT`
-
   - Supported formats
     - `pdf`
     - `docx`
@@ -19,7 +18,6 @@ Use the below URL formats to share (public) file download links that skip Google
     - `html`
 
 - For Google Sheets, use `https://docs.google.com/spreadsheets/d/FILE_ID/export?format=FORMAT`
-
   - Supported formats
     - `pdf`
     - `xlsx`
@@ -31,7 +29,6 @@ Use the below URL formats to share (public) file download links that skip Google
 ## Retrieve the `FILE_ID`
 
 1. Copy the share link to the file. It should look like
-
    - https://docs.google.com/document/d/1a2b3c4D5eFGhijk1234567890/edit?usp=sharing (Google Docs)
    - https://docs.google.com/spreadsheets/d/1a2b3c4D5eFGhijk1234567890/edit?usp=sharing (Google Sheets)
    - https://drive.google.com/file/d/1a2b3c4D5eFGhijk/view?usp=sharing (for any other files)

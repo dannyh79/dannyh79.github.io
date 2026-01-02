@@ -80,7 +80,6 @@ Per documentation in Ruby-Doc.org, `{ ... }{:ruby}` blocks have priority below a
   ```
 
 - The following `#map`s are interpreted differently in Ruby
-
   - `puts arr.map { ... }{:ruby}` equals `puts(arr.map { ... }){:ruby}`, but
   - `puts arr.map do ... end{:ruby}` are actually `puts(arr.map) do ... end{:ruby}`
 

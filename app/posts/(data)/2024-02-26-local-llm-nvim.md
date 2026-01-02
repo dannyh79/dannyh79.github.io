@@ -26,7 +26,6 @@ categories: [vim, neovim, editor, llm]
    ```
 
 3. Configure neovim
-
    - Add plugin [`nomnivore/ollama.nvim`](https://github.com/nomnivore/ollama.nvim) and make ollama serve on start
    - (Optional) Add in progress status blinker to Lualine
 

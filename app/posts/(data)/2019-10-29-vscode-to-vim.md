@@ -67,7 +67,6 @@ For Vim (See below for update):
 ## Update-20191214
 
 - Vim:
-
   - airblade/vim-gitgutter - tuned and custom-mapped key for hunk preview mode
   - [preservim/nerdcommenter](https://github.com/preservim/nerdcommenter) - making commenting a lot easier
   - Ignore \*~/\*.swp/\*.swo files that vim generates globally (settings put under ~/home/.gitignore)
@@ -78,7 +77,6 @@ For Vim (See below for update):
 ## Update-20191215
 
 - Vim:
-
   - [tpope/vim-fugitive](https://github.com/tpope/vim-fugitive) - version control in Vim
   - vim-airline/vim-airline - enabling smart tabline
     > `let g:airline#extensions#tabline#enabled = 1{:vim}`
