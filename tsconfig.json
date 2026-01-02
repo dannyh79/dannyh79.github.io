@@ -27,12 +27,11 @@
     "strict": true
   },
   "include": [
-    "next-env.d.ts",
     "**/*.ts",
     "**/*.tsx",
-    ".next/types/**/*.ts",
-    "vitest.config.mts",
-    ".next/dev/types/**/*.ts"
+    "next-env.d.ts",
+    ".next/dev/types/**/*.ts",
+    ".next/types/**/*.ts"
   ],
-  "exclude": ["node_modules"]
+  "exclude": ["node_modules", "**/*.test.ts", "**/*.spec.ts", "e2e"]
 }
