@@ -1,0 +1,15 @@
+{
+  "rulesync": {
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": ".rulesync/hooks/format.sh"
+          }
+        ]
+      }
+    ]
+  }
+}
