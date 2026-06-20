@@ -1,6 +1,8 @@
 import fs from 'fs';
 import matter from 'gray-matter';
 import path from 'path';
+// @ts-expect-error - avoid adding @types/js-yaml devDependency
+import yaml from 'js-yaml';
 
 type Metadata = {
   title: string;
@@ -21,7 +23,11 @@ function trimDatePrefixFromString(str: string): string {
 function getMDXData(dir: fs.PathLike) {
   const files = getMDorMDXFiles(dir);
   return files.map((file) => {
-    const { data, content } = matter.read(path.join(dir.toString(), file));
+    const { data, content } = matter.read(path.join(dir.toString(), file), {
+      engines: {
+        yaml: (input: string) => yaml.load(input),
+      },
+    });
     const filename = path.basename(file, path.extname(file));
 
     return {
