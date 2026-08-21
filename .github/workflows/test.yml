@@ -14,7 +14,7 @@ on:
 
 env:
   CI: true
-  NODE_VERSION: 21.x
+  NODE_VERSION: 24.x
   E2E_DEVICES: '["chrome"]'
 
 jobs:
@@ -23,7 +23,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - uses: ./.github/actions/setup-pnpm-env
 
@@ -34,7 +34,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - uses: ./.github/actions/setup-pnpm-env
 
@@ -46,7 +46,7 @@ jobs:
 
       - name: Cache Playwright Browsers
         id: cache-playwright-browsers
-        uses: actions/cache@v4
+        uses: actions/cache@v6
         with:
           path: ~/.cache/ms-playwright
           key: playwright-browsers-${{ steps.extract-playwright-version.outputs.playwright_version }}-${{ join(fromJson(env.E2E_DEVICES), '-') }}
