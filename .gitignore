@@ -9,6 +9,7 @@ tsconfig.tsbuildinfo
 tsconfig.test.tsbuildinfo
 .next
 .env
+.worktrees/
 
 # Playwright
 /test-results/
