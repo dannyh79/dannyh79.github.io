@@ -1,52 +1,44 @@
 ---
 title: 'Run Coding Agent with Sounds'
-summary: 'Use PeonPing and StarCraft SCV voice lines to make Oh My Pi lifecycle events audible without installing Claude or OpenClaw.'
+summary: 'Use PeonPing sound packs to notify only when Oh My Pi stops or reaches a resource limit.'
 createdAt: 2026-08-24 00:12:26 +0800
 publishedAt: 2026-08-24
 categories: [macos, llm]
 ---
 
-Coding agents are quiet at the moments where I most need an interruption: a turn finishes, a tool fails, or the agent needs input. A terminal title change helps, but it still requires looking at the terminal. Sound is a better status cue when I have moved on to something else.
+Coding agents should interrupt only when they need attention. Terminal titles still require polling; sound does not.
 
-[PeonPing](https://github.com/PeonPing/peon-ping) plays sound packs for coding-agent lifecycle events. Its `sc_scv` pack uses the StarCraft SCV lines: “Job’s finished” is a more noticeable completion signal than another silent terminal prompt.
+[PeonPing](https://github.com/PeonPing/peon-ping) plays coding-agent sound packs. I use the StarCraft SCV, my favorite terran unit, as the voice chord of my coding agent.
 
-## Install the SCV pack
+## Install a Sound Pack
 
-On macOS, install PeonPing with Homebrew, then select the pack:
+Install PeonPing, then browse [OpenPeon sound packs](https://openpeon.com/packs) or its CLI registry. This example uses `sc_scv`:
 
 ```bash
 brew install PeonPing/tap/peon-ping
+peon packs list --registry
 peon packs use --install sc_scv
-```
-
-Confirm the pack can play before connecting it to an agent:
-
-```bash
 peon preview task.complete
 ```
 
-That should play an SCV completion line. `peon status --verbose` shows the active pack and the config location.
+## Connect It to Oh My Pi
 
-## Connect it to Oh My Pi
-
-The [Oh My Pi adapter](https://github.com/PeonPing/peon-ping/blob/main/adapters/omp.sh) does not install PeonPing. It also looks for `peon.sh` only under Claude Code and OpenClaw-compatible hook paths. This is why running the adapter command alone fails on a clean machine.
-
-I do not use either application. The smallest workaround is to expose Homebrew’s `peon.sh` through the OpenClaw-compatible path that the adapter already checks. Do not use this path when an OpenClaw PeonPing hook already exists:
+The [OMP adapter](https://github.com/PeonPing/peon-ping/blob/main/adapters/omp.sh) looks for PeonPing under Claude Code first, then OpenClaw. Create the Claude-compatible path only when neither hook already exists:
 
 ```bash
-hook="$HOME/.openclaw/hooks/peon-ping/peon.sh"
-if [ -e "$hook" ] || [ -L "$hook" ]; then
-  echo "Existing OpenClaw PeonPing hook: $hook" >&2
+claude_hook="$HOME/.claude/hooks/peon-ping/peon.sh"
+openclaw_hook="$HOME/.openclaw/hooks/peon-ping/peon.sh"
+if [ -e "$claude_hook" ] || [ -L "$claude_hook" ] ||
+   [ -e "$openclaw_hook" ] || [ -L "$openclaw_hook" ]; then
+  echo "Existing PeonPing hook found; not replacing it." >&2
   exit 1
 fi
 
-mkdir -p "$(dirname "$hook")"
-ln -s "$(brew --prefix peon-ping)/libexec/peon.sh" "$hook"
+mkdir -p "$(dirname "$claude_hook")"
+ln -s "$(brew --prefix peon-ping)/libexec/peon.sh" "$claude_hook"
 ```
 
-This does **not** install or configure OpenClaw. It is only a compatibility path for the current adapter preflight check.
-
-Now download the pinned upstream OMP extension, inspect it, then install it:
+This does not install or configure Claude Code. Then inspect and install the adapter:
 
 ```bash
 adapter="$(mktemp)"
@@ -58,14 +50,24 @@ bash "$adapter"
 rm "$adapter"
 ```
 
-Restart OMP after the command succeeds. The extension forwards session starts, turn starts and ends, tool errors, compaction, and shutdown events to PeonPing.
+The upstream extension emits `Stop` after every `turn_end`. Change it to `agent_settled`, which fires only after retries, compaction, and queued continuations are finished:
 
-## Keep only the attention signal
+```bash
+extension="$HOME/.omp/agent/extensions/peon-ping/peon-ping.ts"
+grep -q 'pi.on("turn_end",' "$extension" ||
+  { echo "Expected turn_end handler not found: $extension" >&2; exit 1; }
+perl -0pi -e 's/pi\.on\("turn_end",/pi.on("agent_settled",/' "$extension"
+```
 
-I only want a sound when the agent stops and I need to look. After `peon packs use`, a fresh `~/.openpeon/config.json` contains only `default_pack`; replace that fresh file with:
+Reapply this after reinstalling the adapter, then restart OMP.
+
+## Keep Only the Attention Signal
+
+Enable a sound only when the run settles, user input is required, or a quota/rate limit needs action:
 
 ```json
 {
+  "_comment": "change default_pack value to your actual default sound pack name",
   "default_pack": "sc_scv",
   "categories": {
     "session.start": false,
@@ -73,19 +75,18 @@ I only want a sound when the agent stops and I need to look. After `peon packs u
     "task.complete": true,
     "task.error": false,
     "input.required": true,
-    "resource.limit": false,
+    "resource.limit": true,
     "user.spam": false
-  }
+  },
+  "suppress_subagent_complete": true
 }
 ```
 
-If the config already has other settings, retain them and merge in the `categories` object instead of replacing the file.
+Merge these keys into an existing `~/.openpeon/config.json`. OMP currently emits only settled completion events; the input and limit categories are ready when its adapter forwards them. OMP also does not identify main versus subagents, so suppression works only when PeonPing can recognise the child session.
 
-This silences every routine event and retains `task.complete`, which OMP currently emits when a turn ends. `input.required` remains enabled for a future OMP adapter that forwards a permission or waiting event; the current adapter does not emit one. It also cannot distinguish the main agent from subagents, so this is the smallest useful signal rather than an exact “main agent needs me now” filter.
+## It Is a Cue, Not a Dashboard
 
-## It is a cue, not a dashboard
-
-A sound tells me that something changed; it does not tell me whether the work is correct. I still inspect errors and review completed changes. The payoff is simply less polling: when the SCV says the job is finished, I know it is time to look.
+Treat the sound as an interruption, then inspect the result.
 
 ## Refs
 
