@@ -20,6 +20,9 @@ it easy to blur together threads, event loops, tasks, and futures.
   FastAPI's thread to that worker loop and returns a cross-thread future.
 - `asyncio.to_thread()`: runs blocking `boto3.put_object()` in an executor
   worker so the event loop can keep scheduling other tasks.
+- `ThreadPoolExecutor(max_workers=...)`: use a per-process cap from
+  `S3_UPLOAD_MAX_WORKERS`; start containers at `4` and an unconstrained host at
+  `8`, then load-test with the S3 connection pool and upstream limits.
 - `asyncio.wrap_future()`: lets FastAPI await the cross-thread result without
   blocking its own event loop.
 - For this upload path, start with `asyncio.to_thread()` directly in the route.
@@ -59,7 +62,7 @@ The upload route had three execution layers.
                                                                          │
                                                                          ▼
 ┌──────────────────────────────────────────────────────────────────────┐
-│ Default ThreadPoolExecutor worker(s)                                  │
+│ ThreadPoolExecutor worker(s)                                          │
 │                                                                      │
 │  blocking_s3_call(...)                                                │
 │       └─ s3_client.put_object(...)                                    │
@@ -162,6 +165,79 @@ client. It moves the blocking wait away from the event loop.
 
 The executor is a pool, not one permanent S3 thread. Multiple uploads may reuse
 workers or cause several workers to run, subject to the executor's capacity.
+
+### Configuring a Dedicated S3 Pool
+
+`asyncio.to_thread()` does not accept an executor argument. It always uses the
+current loop's default executor. That is fine when every blocking task belongs
+to the same capacity budget.
+
+For S3 uploads, I would make the pool explicit when uploads should not compete
+with other blocking work in the process:
+
+```python
+import asyncio
+import os
+from concurrent.futures import ThreadPoolExecutor
+
+s3_executor = ThreadPoolExecutor(
+    max_workers=int(os.environ.get('S3_UPLOAD_MAX_WORKERS', '4')),
+    thread_name_prefix='s3-upload',
+)
+
+
+async def async_s3_uploader_task(...) -> str:
+    loop = asyncio.get_running_loop()
+    return await loop.run_in_executor(
+        s3_executor,
+        blocking_s3_call,
+        bucket,
+        key,
+        data,
+        content_type,
+    )
+```
+
+The worker count is per Python process. `max_workers=4` with four Uvicorn
+workers means up to sixteen S3-upload threads before replicas are counted.
+Configure it outside the code so the same image works in a constrained
+container and on a raw host.
+
+### Suggested Starting Configurations
+
+For a container with one application process and a CPU limit, start with four
+S3 upload threads and raise it only after observing queueing and S3 latency:
+
+```yaml
+# Kubernetes Deployment, Docker Compose, or equivalent environment config
+env:
+  - name: S3_UPLOAD_MAX_WORKERS
+    value: '4'
+```
+
+For a raw host running one application process without a tight CPU quota, start
+with eight:
+
+```bash
+S3_UPLOAD_MAX_WORKERS=8 uvicorn app:app
+```
+
+These are starting points, not universal S3 settings. The pool limits concurrent
+blocking uploads, makes the thread name visible in logs, and gives the upload
+path a budget that can be tuned independently. Keep the S3 client's connection
+pool at least as large as `S3_UPLOAD_MAX_WORKERS`; otherwise threads can queue
+inside boto3 instead. Match both settings to request size, expected latency, and
+load-test results.
+
+The executor also needs an explicit shutdown path. Stop taking new uploads,
+wait for or cancel pending application work, then call:
+
+```python
+s3_executor.shutdown(wait=True, cancel_futures=True)
+```
+
+`cancel_futures=True` cancels work that has not started. It cannot interrupt a
+thread already inside `boto3.put_object()`.
 
 ## The Result Comes Back to FastAPI
 
