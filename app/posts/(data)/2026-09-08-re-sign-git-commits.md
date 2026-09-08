@@ -92,6 +92,36 @@ author identity. Confirm the result before force-pushing:
 git show --no-patch --format=fuller HEAD
 ```
 
+## Bonus: Sign With an SSH Key
+
+Git can sign commits with an SSH key instead of GPG. Configure the signing
+format and point Git at the public half of the key:
+
+```bash
+git config --global gpg.format ssh
+git config --global user.signingKey ~/.ssh/id_ed25519.pub
+git config --global commit.gpgSign true
+```
+
+The corresponding private key must be available to `ssh-agent`. Re-sign the
+latest commit with the same amend command:
+
+```bash
+git commit --amend --no-edit -S
+```
+
+For a verified badge on a forge, register that public key as a **signing key**
+in the relevant account. On GitHub, for example:
+
+```bash
+gh ssh-key add ~/.ssh/id_ed25519.pub --type signing
+```
+
+GitLab also verifies SSH-signed commits against public keys stored in the
+user's GitLab profile. A key that works for Git-over-SSH is not automatically a
+verified commit-signing identity everywhere; check the signing-key settings for
+the forge that hosts the repository.
+
 ## Verify Before Pushing
 
 Inspect the signatures in the rewritten branch range:
@@ -114,3 +144,6 @@ since the last fetch. That is the protection a plain `--force` does not have.
 - [Git `commit`](https://git-scm.com/docs/git-commit)
 - [Git `rebase`](https://git-scm.com/docs/git-rebase)
 - [Git `push`](https://git-scm.com/docs/git-push)
+- [Git `config`: SSH signing](https://git-scm.com/docs/git-config#Documentation/git-config.txt-gpgformat)
+- [GitHub: SSH commit signature verification](https://docs.github.com/en/authentication/managing-commit-signature-verification/about-commit-signature-verification#ssh-commit-signature-verification)
+- [GitLab: Signed commits](https://docs.gitlab.com/user/project/repository/signed_commits/)
