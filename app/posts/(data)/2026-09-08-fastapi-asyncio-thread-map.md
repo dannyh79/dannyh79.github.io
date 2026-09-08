@@ -7,17 +7,17 @@ categories: [python, fastapi, asyncio, aws]
 ---
 
 `boto3` is synchronous, but Amazon Bedrock's `converse_stream()` returns an
-`EventStream` that yields response events over time. That makes it a better
-example than one blocking S3 upload: a FastAPI app needs to read a blocking
-stream without freezing its event loop, then send each text delta back to the
-HTTP client as it arrives.
+`EventStream` that yields response events over time. A FastAPI app needs to
+read that blocking stream without freezing its event loop, then send each text
+delta back to the HTTP client as it arrives.
 
 ## TL;DR
 
 - `BedrockRuntime.Client.converse_stream()`: starts a model response stream; the
   returned `EventStream` yields events such as `contentBlockDelta`.
 - `ThreadPoolExecutor`: runs the blocking Bedrock request and its event iterator
-  outside FastAPI's event-loop thread.
+  outside FastAPI's event-loop thread; configure its process-wide capacity with
+  `APP_MAX_WORKERS`.
 - `loop.run_in_executor()`: sends that blocking stream pump to a specific,
   bounded executor.
 - `asyncio.Queue`: transfers deltas from the executor thread to the async HTTP
@@ -35,29 +35,19 @@ The event loop is not a thread. It schedules asyncio tasks on a thread. A
 as the synchronous `boto3` client and its event iterator.
 
 ```text
-                              one Python process
-
-┌──────────────────────────────────────────────────────────────────────┐
-│ FastAPI / Uvicorn event-loop thread                                  │
-│                                                                      │
-│  async generator for StreamingResponse                               │
-│       │                                                              │
-│       ├─ starts loop.run_in_executor(bedrock_executor, pump, ...) ──┐│
-│       │                                                              ││
-│       └─ await queue.get()                                           ││
-│          yields each text delta to the HTTP client                   ││
-└──────────────────────────────────────────────────────────────────────┘│
-                                                                         │
-                                                                         ▼
-┌──────────────────────────────────────────────────────────────────────┐
-│ bedrock-stream_0 ... bedrock-stream_N                                 │
-│ ThreadPoolExecutor worker                                             │
-│                                                                      │
-│  response = bedrock_runtime.converse_stream(...)                      │
-│  for event in response['stream']:                                     │
-│      read contentBlockDelta.delta.text                                │
-│      run_coroutine_threadsafe(queue.put(text), loop).result()        │
-└──────────────────────────────────────────────────────────────────────┘
+FastAPI / Uvicorn event-loop thread
+│
+├─ starts loop.run_in_executor(app_executor, pump_bedrock_stream, ...)
+│
+└─ awaits queue.get() and yields each text delta to StreamingResponse
+                         ▲
+                         │ run_coroutine_threadsafe(queue.put(text), loop)
+                         │
+ThreadPoolExecutor worker (bedrock-stream_0 ... bedrock-stream_N)
+│
+├─ response = bedrock_runtime.converse_stream(...)
+└─ for event in response['stream']:
+     read contentBlockDelta.delta.text
 ```
 
 The executor thread blocks while it waits for Bedrock. The FastAPI event-loop
@@ -103,31 +93,33 @@ text = await asyncio.to_thread(blocking_bedrock_call, prompt)
 ```
 
 Streaming is different. It is long-lived, needs a bounded concurrency budget,
-and should not compete with unrelated blocking work. Give it a dedicated pool:
+and should not compete with unrelated blocking work. Give it a dedicated pool
+whose size comes from a generic application setting:
 
 ```python
 import os
 from concurrent.futures import ThreadPoolExecutor
 
-bedrock_executor = ThreadPoolExecutor(
-    max_workers=int(os.environ.get('BEDROCK_STREAM_MAX_WORKERS', '4')),
+app_default_max_workers = min(32, (os.process_cpu_count() or 1) + 4)
+app_executor = ThreadPoolExecutor(
+    max_workers=int(os.environ.get('APP_MAX_WORKERS', app_default_max_workers)),
     thread_name_prefix='bedrock-stream',
 )
 ```
 
 `max_workers` is per Python process. Four Uvicorn workers with
-`BEDROCK_STREAM_MAX_WORKERS=4` can start up to sixteen Bedrock streams before
-replicas are counted.
+`APP_MAX_WORKERS=4` can start up to sixteen executor threads before replicas
+are counted.
 
 ### Suggested Starting Configurations
 
 For a container with one application process and a CPU limit, start with four
-concurrent Bedrock streams:
+executor workers:
 
 ```yaml
 # Kubernetes Deployment, Docker Compose, or equivalent environment config
 env:
-  - name: BEDROCK_STREAM_MAX_WORKERS
+  - name: APP_MAX_WORKERS
     value: '4'
 ```
 
@@ -135,13 +127,22 @@ For a raw host running one application process without a tight CPU quota, start
 with eight:
 
 ```bash
-BEDROCK_STREAM_MAX_WORKERS=8 uvicorn app:app
+APP_MAX_WORKERS=8 uvicorn app:app
 ```
 
-These are starting points, not Bedrock quotas. Each active stream holds one
-executor worker until the model finishes. Set the value from the number of
-concurrent streams the process may own, then load-test against model quotas,
-request latency, and your retry policy.
+These are application starting points, not Bedrock quotas. Each active stream
+holds one executor worker until the model finishes. Set the value from the
+number of concurrent streams the process may own, then load-test against model
+quotas, request latency, and your retry policy.
+
+Python already has a useful default heuristic. In Python 3.13+, omitting
+`max_workers` uses
+`min(32, (os.process_cpu_count() or 1) + 4)`. The
+[official documentation](https://docs.python.org/3/library/concurrent.futures.html#concurrent.futures.ThreadPoolExecutor)
+says this preserves at least five workers for I/O-bound work while avoiding an
+unbounded implicit pool on many-core hosts. Use that default when the executor
+is truly general-purpose; set `APP_MAX_WORKERS` when the application needs an
+explicit operational limit.
 
 ## Bridge the Blocking Stream Back to Async Code
 
@@ -187,7 +188,7 @@ async def bedrock_text_stream(model_id: str, prompt: str) -> AsyncIterator[str]:
     loop = asyncio.get_running_loop()
     queue: asyncio.Queue[str | object] = asyncio.Queue(maxsize=32)
     producer = loop.run_in_executor(
-        bedrock_executor,
+        app_executor,
         partial(
             pump_bedrock_stream,
             loop,
@@ -234,7 +235,7 @@ On application shutdown, stop accepting new streams, let the chosen drain period
 finish, then close the executor:
 
 ```python
-bedrock_executor.shutdown(wait=True, cancel_futures=True)
+app_executor.shutdown(wait=True, cancel_futures=True)
 ```
 
 `cancel_futures=True` cancels work that has not started. It cannot stop a stream
