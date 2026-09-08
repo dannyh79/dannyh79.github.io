@@ -54,6 +54,46 @@ The executor thread blocks while it waits for Bedrock. The FastAPI event-loop
 thread does not. It waits asynchronously for queue items and can still run
 other requests.
 
+## Choose the Execution Model
+
+Multiple OS threads are needed only because the Boto3 Bedrock client is
+synchronous. An event loop can switch tasks only when they reach `await`; it
+cannot preempt a thread that is blocked inside `response['stream']` waiting for
+the next network event.
+
+```text
+Does the library expose an async API that you can await?
+│
+├─ Yes → await it on the FastAPI event loop.
+│         One event loop can serve many concurrent I/O waits.
+│
+└─ No → Is the blocking work called from an async route or dependency?
+         │
+         ├─ No → a normal FastAPI def route can use FastAPI's threadpool.
+         │
+         └─ Yes → Is it short, isolated blocking work?
+                  │
+                  ├─ Yes → await asyncio.to_thread(blocking_call, ...).
+                  │         It uses the loop's default ThreadPoolExecutor.
+                  │
+                  └─ No → Is it long-lived, streamed, or capacity-sensitive?
+                           │
+                           ├─ Yes → use a dedicated ThreadPoolExecutor and
+                           │         loop.run_in_executor(...).
+                           │         Bridge a synchronous stream with a queue.
+                           │
+                           └─ No → keep the design simple and use to_thread().
+
+Is the work CPU-bound rather than blocked on I/O?
+│
+└─ Yes → use a process pool or durable worker system instead of threads.
+```
+
+Threads do not make the event loop faster. They give blocking I/O somewhere
+else to wait. In this example, one thread waits on Bedrock while the FastAPI
+thread keeps handling queue operations and other HTTP requests. If an async
+Bedrock client existed for the same API, the executor layer would not be needed.
+
 ## The Bedrock Call Is a Blocking Stream
 
 The [Boto3 `converse_stream()` API](https://boto3.amazonaws.com/v1/documentation/api/latest/reference/services/bedrock-runtime/client/converse_stream.html)
