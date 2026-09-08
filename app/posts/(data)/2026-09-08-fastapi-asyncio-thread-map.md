@@ -10,6 +10,21 @@ Had to read an upload path where one request crossed two event loops and then
 landed in a normal thread for `boto3`. The code was valid, but the names made
 it easy to blur together threads, event loops, tasks, and futures.
 
+## TL;DR
+
+- `asyncio.new_event_loop()`: creates the worker's event-loop object; it does
+  not start a thread or run work by itself.
+- `threading.Thread(...)`: creates the OS thread that owns and runs the worker
+  loop.
+- `asyncio.run_coroutine_threadsafe()`: submits the upload coroutine from
+  FastAPI's thread to that worker loop and returns a cross-thread future.
+- `asyncio.to_thread()`: runs blocking `boto3.put_object()` in an executor
+  worker so the event loop can keep scheduling other tasks.
+- `asyncio.wrap_future()`: lets FastAPI await the cross-thread result without
+  blocking its own event loop.
+- For this upload path, start with `asyncio.to_thread()` directly in the route.
+  Add a dedicated worker loop only when it owns a real separate workload.
+
 The useful distinction is this: an event loop is not a thread. It runs tasks
 and callbacks; it does not replace the OS thread that runs it.
 
