@@ -1,6 +1,6 @@
 ---
 title: 'Demystifying Threading and Event Loop Models in Python'
-summary: 'Trace one S3 upload from a FastAPI request through an asyncio worker loop and a thread-pool call to boto3.'
+summary: 'A practical guide to Python threading, asyncio event loops, and blocking I/O.'
 createdAt: 2026-09-08 12:31:45 +0800
 publishedAt: 2026-09-08
 categories: [python, fastapi, asyncio, aws]
