@@ -6,212 +6,128 @@ publishedAt: 2026-09-08
 categories: [python, fastapi, asyncio, aws]
 ---
 
-Had to read an upload path where one request crossed two event loops and then
-landed in a normal thread for `boto3`. The code was valid, but the names made
-it easy to blur together threads, event loops, tasks, and futures.
+`boto3` is synchronous, but Amazon Bedrock's `converse_stream()` returns an
+`EventStream` that yields response events over time. That makes it a better
+example than one blocking S3 upload: a FastAPI app needs to read a blocking
+stream without freezing its event loop, then send each text delta back to the
+HTTP client as it arrives.
 
 ## TL;DR
 
-- `asyncio.new_event_loop()`: creates the worker's event-loop object; it does
-  not start a thread or run work by itself.
-- `threading.Thread(...)`: creates the OS thread that owns and runs the worker
-  loop.
-- `asyncio.run_coroutine_threadsafe()`: submits the upload coroutine from
-  FastAPI's thread to that worker loop and returns a cross-thread future.
-- `asyncio.to_thread()`: runs blocking `boto3.put_object()` in an executor
-  worker so the event loop can keep scheduling other tasks.
-- `ThreadPoolExecutor(max_workers=...)`: use a per-process cap from
-  `S3_UPLOAD_MAX_WORKERS`; start containers at `4` and an unconstrained host at
-  `8`, then load-test with the S3 connection pool and upstream limits.
-- `asyncio.wrap_future()`: lets FastAPI await the cross-thread result without
-  blocking its own event loop.
-- For this upload path, start with `asyncio.to_thread()` directly in the route.
-  Add a dedicated worker loop only when it owns a real separate workload.
+- `BedrockRuntime.Client.converse_stream()`: starts a model response stream; the
+  returned `EventStream` yields events such as `contentBlockDelta`.
+- `ThreadPoolExecutor`: runs the blocking Bedrock request and its event iterator
+  outside FastAPI's event-loop thread.
+- `loop.run_in_executor()`: sends that blocking stream pump to a specific,
+  bounded executor.
+- `asyncio.Queue`: transfers deltas from the executor thread to the async HTTP
+  response and can provide backpressure.
+- `asyncio.run_coroutine_threadsafe()`: safely puts an event onto FastAPI's
+  queue from the executor thread.
+- `asyncio.to_thread()`: uses the event loop's default executor. Use it for
+  small isolated calls; use an explicit `ThreadPoolExecutor` when Bedrock needs
+  an independent concurrency budget.
 
-The useful distinction is this: an event loop is not a thread. It runs tasks
-and callbacks; it does not replace the OS thread that runs it.
+## The Execution Map
 
-- A **thread** is an operating-system execution lane.
-- An **event loop** schedules callbacks and asyncio tasks on a thread.
-- A **task** is a coroutine scheduled by an event loop.
-- A **future** represents a result that will arrive later.
-
-The upload route had three execution layers.
+The event loop is not a thread. It schedules asyncio tasks on a thread. A
+`ThreadPoolExecutor` supplies extra OS threads for code that cannot yield, such
+as the synchronous `boto3` client and its event iterator.
 
 ```text
-                           one Python process
+                              one Python process
 
 ┌──────────────────────────────────────────────────────────────────────┐
 │ FastAPI / Uvicorn event-loop thread                                  │
 │                                                                      │
-│  upload_document(payload)                                            │
+│  async generator for StreamingResponse                               │
 │       │                                                              │
-│       ├─ run_coroutine_threadsafe(coro, aws_worker.loop) ───────────┐│
-│       └─ await wrap_future(future)                                  ││
-│          The request waits without blocking FastAPI's event loop.   ││
+│       ├─ starts loop.run_in_executor(bedrock_executor, pump, ...) ──┐│
+│       │                                                              ││
+│       └─ await queue.get()                                           ││
+│          yields each text delta to the HTTP client                   ││
 └──────────────────────────────────────────────────────────────────────┘│
                                                                          │
                                                                          ▼
 ┌──────────────────────────────────────────────────────────────────────┐
-│ S3AsyncWorkerThread                                                   │
+│ bedrock-stream_0 ... bedrock-stream_N                                 │
+│ ThreadPoolExecutor worker                                             │
 │                                                                      │
-│  aws_worker.loop                                                      │
-│       └─ async_s3_uploader_task(...)                                  │
-│            └─ await asyncio.to_thread(blocking_s3_call, ...) ──────┐│
-└──────────────────────────────────────────────────────────────────────┘│
-                                                                         │
-                                                                         ▼
-┌──────────────────────────────────────────────────────────────────────┐
-│ ThreadPoolExecutor worker(s)                                          │
-│                                                                      │
-│  blocking_s3_call(...)                                                │
-│       └─ s3_client.put_object(...)                                    │
-│          Waits for the network and S3 response.                      │
-│                                                                      │
-│  ETag or error ───────► worker-loop task ───────► HTTP route         │
+│  response = bedrock_runtime.converse_stream(...)                      │
+│  for event in response['stream']:                                     │
+│      read contentBlockDelta.delta.text                                │
+│      run_coroutine_threadsafe(queue.put(text), loop).result()        │
 └──────────────────────────────────────────────────────────────────────┘
 ```
 
-## The Worker Loop Has a Thread of Its Own
+The executor thread blocks while it waits for Bedrock. The FastAPI event-loop
+thread does not. It waits asynchronously for queue items and can still run
+other requests.
 
-The worker is created before the server starts accepting uploads:
+## The Bedrock Call Is a Blocking Stream
 
-```python
-class BackgroundLoopWorker:
-    def __init__(self) -> None:
-        self.loop = asyncio.new_event_loop()
-        self.thread = threading.Thread(
-            target=self._run_loop_forever,
-            name='S3AsyncWorkerThread',
-            daemon=True,
-        )
-
-    def _run_loop_forever(self) -> None:
-        asyncio.set_event_loop(self.loop)
-        self.loop.run_forever()
-```
-
-`asyncio.new_event_loop()` creates a loop object. Nothing is running yet.
-`threading.Thread(...)` creates the OS thread. When that thread starts,
-`set_event_loop()` makes the loop current in that thread and `run_forever()`
-starts processing work submitted to it.
-
-At that point the process has two loops on two separate threads:
-
-```text
-FastAPI / Uvicorn thread
-└─ FastAPI event loop
-
-S3AsyncWorkerThread
-└─ aws_worker.loop
-```
-
-An event loop can switch between ready asyncio tasks when one reaches `await`.
-That is concurrency, not parallel execution of Python code on the same thread.
-The extra OS threads are what provide separate places for blocking work to run.
-
-## The Request Crosses to the Worker Loop
-
-The route schedules the uploader coroutine on the worker loop:
+The [Boto3 `converse_stream()` API](https://boto3.amazonaws.com/v1/documentation/api/latest/reference/services/bedrock-runtime/client/converse_stream.html)
+sends messages to a Bedrock model and returns an `EventStream`. Each stream
+event has one top-level key. For text output, the event to look for is
+`contentBlockDelta` and its `delta.text` field.
 
 ```python
-future = asyncio.run_coroutine_threadsafe(
-    async_s3_uploader_task(
-        payload.bucket,
-        payload.key,
-        payload.content,
-        payload.content_type,
-    ),
-    aws_worker.loop,
+response = bedrock_runtime.converse_stream(
+    modelId=model_id,
+    messages=[
+        {
+            'role': 'user',
+            'content': [{'text': prompt}],
+        },
+    ],
 )
+
+for event in response['stream']:
+    delta = event.get('contentBlockDelta', {}).get('delta', {})
+    text = delta.get('text')
+    if text:
+        print(text, end='', flush=True)
 ```
 
-`asyncio.run_coroutine_threadsafe()` is the cross-thread handoff. It does not
-run the uploader in FastAPI's thread. It gives the worker loop a coroutine to
-schedule and returns a `concurrent.futures.Future` immediately.
+That loop is ordinary synchronous Python. Putting it directly in an `async def`
+FastAPI route would hold the event-loop thread for the lifetime of the model
+response. Wrapping only the initial `converse_stream()` call is not enough; the
+subsequent iteration over `response['stream']` can block too.
 
-That is different from `asyncio.create_task()`, which schedules work on the
-currently running loop. Here the route explicitly wants another loop owned by
-another thread.
+## Use a Dedicated ThreadPoolExecutor for Bedrock Streams
 
-## Boto3 Still Blocks
-
-Inside the worker-loop coroutine, the S3 call is handed to an executor thread:
+`asyncio.to_thread()` is useful when the default executor is sufficient:
 
 ```python
-async def async_s3_uploader_task(...) -> str:
-    return await asyncio.to_thread(
-        blocking_s3_call,
-        bucket,
-        key,
-        data,
-        content_type,
-    )
-
-
-def blocking_s3_call(...) -> str:
-    response = s3_client.put_object(...)
-    return response['ETag']
+text = await asyncio.to_thread(blocking_bedrock_call, prompt)
 ```
 
-`boto3` exposes `put_object()` as a regular client call. Calling it directly
-from the coroutine would hold the worker event-loop thread until S3 replies.
-`asyncio.to_thread()` runs a blocking function in a separate thread, so this
-code sends `blocking_s3_call()` to the loop's default `ThreadPoolExecutor`.
-
-The uploader task pauses at `await`; the worker loop can run another ready task;
-and an executor worker waits for S3. `to_thread()` does not make boto3 an async
-client. It moves the blocking wait away from the event loop.
-
-The executor is a pool, not one permanent S3 thread. Multiple uploads may reuse
-workers or cause several workers to run, subject to the executor's capacity.
-
-### Configuring a Dedicated S3 Pool
-
-`asyncio.to_thread()` does not accept an executor argument. It always uses the
-current loop's default executor. That is fine when every blocking task belongs
-to the same capacity budget.
-
-For S3 uploads, I would make the pool explicit when uploads should not compete
-with other blocking work in the process:
+Streaming is different. It is long-lived, needs a bounded concurrency budget,
+and should not compete with unrelated blocking work. Give it a dedicated pool:
 
 ```python
-import asyncio
 import os
 from concurrent.futures import ThreadPoolExecutor
 
-s3_executor = ThreadPoolExecutor(
-    max_workers=int(os.environ.get('S3_UPLOAD_MAX_WORKERS', '4')),
-    thread_name_prefix='s3-upload',
+bedrock_executor = ThreadPoolExecutor(
+    max_workers=int(os.environ.get('BEDROCK_STREAM_MAX_WORKERS', '4')),
+    thread_name_prefix='bedrock-stream',
 )
-
-
-async def async_s3_uploader_task(...) -> str:
-    loop = asyncio.get_running_loop()
-    return await loop.run_in_executor(
-        s3_executor,
-        blocking_s3_call,
-        bucket,
-        key,
-        data,
-        content_type,
-    )
 ```
 
-The worker count is per Python process. `max_workers=4` with four Uvicorn
-workers means up to sixteen S3-upload threads before replicas are counted.
-Configure it outside the code so the same image works in a constrained
-container and on a raw host.
+`max_workers` is per Python process. Four Uvicorn workers with
+`BEDROCK_STREAM_MAX_WORKERS=4` can start up to sixteen Bedrock streams before
+replicas are counted.
 
 ### Suggested Starting Configurations
 
 For a container with one application process and a CPU limit, start with four
-S3 upload threads and raise it only after observing queueing and S3 latency:
+concurrent Bedrock streams:
 
 ```yaml
 # Kubernetes Deployment, Docker Compose, or equivalent environment config
 env:
-  - name: S3_UPLOAD_MAX_WORKERS
+  - name: BEDROCK_STREAM_MAX_WORKERS
     value: '4'
 ```
 
@@ -219,105 +135,120 @@ For a raw host running one application process without a tight CPU quota, start
 with eight:
 
 ```bash
-S3_UPLOAD_MAX_WORKERS=8 uvicorn app:app
+BEDROCK_STREAM_MAX_WORKERS=8 uvicorn app:app
 ```
 
-These are starting points, not universal S3 settings. The pool limits concurrent
-blocking uploads, makes the thread name visible in logs, and gives the upload
-path a budget that can be tuned independently. Keep the S3 client's connection
-pool at least as large as `S3_UPLOAD_MAX_WORKERS`; otherwise threads can queue
-inside boto3 instead. Match both settings to request size, expected latency, and
-load-test results.
+These are starting points, not Bedrock quotas. Each active stream holds one
+executor worker until the model finishes. Set the value from the number of
+concurrent streams the process may own, then load-test against model quotas,
+request latency, and your retry policy.
 
-The executor also needs an explicit shutdown path. Stop taking new uploads,
-wait for or cancel pending application work, then call:
+## Bridge the Blocking Stream Back to Async Code
 
-```python
-s3_executor.shutdown(wait=True, cancel_futures=True)
-```
-
-`cancel_futures=True` cancels work that has not started. It cannot interrupt a
-thread already inside `boto3.put_object()`.
-
-## The Result Comes Back to FastAPI
-
-The route receives a `concurrent.futures.Future`, which belongs to the
-cross-thread API. FastAPI needs an awaitable attached to its own loop:
+An `asyncio.Queue` is the handoff between the executor thread and the FastAPI
+async generator. The bounded queue matters: when the HTTP client is slow, the
+executor thread waits instead of buffering an unbounded model response in
+memory.
 
 ```python
-etag = await asyncio.wrap_future(future)
-return {'etag': etag}
-```
+import asyncio
+from collections.abc import AsyncIterator
+from functools import partial
+from typing import Final
 
-`asyncio.wrap_future()` provides that bridge. While the request coroutine waits,
-FastAPI's event loop can serve other ready requests. When the uploader returns
-an ETag or raises, the HTTP route resumes.
+END: Final = object()
 
-## This Is Not Fire-and-Forget
 
-The request is non-blocking for FastAPI's event loop, but the client still waits
-for the upload to finish. The route cannot return until this completes:
-
-```python
-etag = await asyncio.wrap_future(future)
-```
-
-That distinction matters for API design. A true background submission normally
-returns `202 Accepted` with a job ID, stores the work durably, and lets another
-worker process it after the HTTP response is gone.
-
-## The Second Loop Is Probably Unnecessary Here
-
-If the only reason for `S3AsyncWorkerThread` is to keep a blocking boto3 call
-off FastAPI's event loop, the route can use `to_thread()` directly:
-
-```python
-@app.post('/upload', status_code=status.HTTP_201_CREATED)
-async def upload_document(payload: S3UploadPayload) -> dict[str, str]:
+def pump_bedrock_stream(
+    loop: asyncio.AbstractEventLoop,
+    queue: asyncio.Queue[str | object],
+    *,
+    model_id: str,
+    prompt: str,
+) -> None:
     try:
-        etag = await asyncio.to_thread(
-            blocking_s3_call,
-            payload.bucket,
-            payload.key,
-            payload.content,
-            payload.content_type,
+        response = bedrock_runtime.converse_stream(
+            modelId=model_id,
+            messages=[
+                {'role': 'user', 'content': [{'text': prompt}]},
+            ],
         )
-    except ClientError as error:
-        raise HTTPException(status_code=500, detail=f'S3 upload failed: {error}') from error
 
-    return {'etag': etag}
+        for event in response['stream']:
+            delta = event.get('contentBlockDelta', {}).get('delta', {})
+            text = delta.get('text')
+            if text:
+                asyncio.run_coroutine_threadsafe(queue.put(text), loop).result()
+    finally:
+        asyncio.run_coroutine_threadsafe(queue.put(END), loop).result()
+
+
+async def bedrock_text_stream(model_id: str, prompt: str) -> AsyncIterator[str]:
+    loop = asyncio.get_running_loop()
+    queue: asyncio.Queue[str | object] = asyncio.Queue(maxsize=32)
+    producer = loop.run_in_executor(
+        bedrock_executor,
+        partial(
+            pump_bedrock_stream,
+            loop,
+            queue,
+            model_id=model_id,
+            prompt=prompt,
+        ),
+    )
+
+    while True:
+        item = await queue.get()
+        if item is END:
+            break
+        yield item
+
+    await producer
 ```
 
-This version keeps FastAPI responsive during the blocking call without adding a
-second event loop, an extra thread, or a cross-thread future. I would start
-there.
+`run_coroutine_threadsafe(...).result()` is deliberate. It makes the executor
+thread wait until the event loop accepts the next queue item. With `maxsize=32`,
+that creates a fixed buffer between Bedrock and a slow HTTP client.
 
-A dedicated loop can still be justified when it owns a separate execution
-domain: a queue consumer, long-lived loop-local state, or scheduling that must
-not compete with request handling. Blocking boto3 alone is not enough reason.
+A FastAPI route can return this generator through `StreamingResponse`:
 
-## Things That Still Need a Decision
+```python
+from fastapi.responses import StreamingResponse
 
-- **Backpressure:** each request can add executor work. Bound concurrency with a
-  semaphore, bounded executor, or queue before uploads pile up.
-- **Cancellation:** cancelling the HTTP request can cancel the asyncio wait. It
-  does not reliably stop a synchronous boto3 call already running in a thread.
-  Set sensible network timeouts.
-- **Shutdown:** stopping a loop is not a full shutdown plan. Stop accepting new
-  work, await or cancel outstanding tasks, shut down the executor, then close
-  the loop.
-- **Errors:** preserve the S3 exception and return an upload failure, not a
-  generic scheduling error.
 
-The thread map is enough to reason about the path: FastAPI submits to the
-worker loop; the worker loop submits blocking boto3 work to an executor; the
-result travels back through the two futures. Once those boundaries are clear,
-the extra machinery is easier to question.
+@app.post('/chat')
+async def chat(prompt: str) -> StreamingResponse:
+    return StreamingResponse(
+        bedrock_text_stream(model_id='your-model-id', prompt=prompt),
+        media_type='text/plain',
+    )
+```
+
+## Cancellation and Shutdown Still Matter
+
+Cancelling the HTTP request cancels the async generator's wait, but it does not
+reliably interrupt a worker thread already reading from Bedrock. Treat client
+disconnects, model timeouts, retries, and executor shutdown as separate paths.
+
+On application shutdown, stop accepting new streams, let the chosen drain period
+finish, then close the executor:
+
+```python
+bedrock_executor.shutdown(wait=True, cancel_futures=True)
+```
+
+`cancel_futures=True` cancels work that has not started. It cannot stop a stream
+already inside the synchronous Boto3 iterator.
+
+The important boundary is small: FastAPI owns async HTTP work; the dedicated
+executor owns blocking Bedrock streams; the queue moves deltas between them.
+That is enough to reason about concurrency, backpressure, and thread limits
+without adding a second event loop.
 
 ## Refs
 
-- [Python Event Loop Documentation](https://docs.python.org/3/library/asyncio-eventloop.html)
-- [Python `asyncio.to_thread`](https://docs.python.org/3/library/asyncio-task.html#asyncio.to_thread)
+- [Boto3 `converse_stream`](https://boto3.amazonaws.com/v1/documentation/api/latest/reference/services/bedrock-runtime/client/converse_stream.html)
+- [Amazon Bedrock Converse API](https://docs.aws.amazon.com/bedrock/latest/userguide/conversation-inference.html)
+- [Python `asyncio.run_in_executor`](https://docs.python.org/3/library/asyncio-eventloop.html#asyncio.loop.run_in_executor)
 - [Python `asyncio.run_coroutine_threadsafe`](https://docs.python.org/3/library/asyncio-task.html#asyncio.run_coroutine_threadsafe)
-- [Boto3 `put_object`](https://boto3.amazonaws.com/v1/documentation/api/latest/reference/services/s3/client/put_object.html)
-- [FastAPI Async Documentation](https://fastapi.tiangolo.com/async/)
+- [FastAPI `StreamingResponse`](https://fastapi.tiangolo.com/advanced/custom-response/#streamingresponse)
