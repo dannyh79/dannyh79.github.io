@@ -1,5 +1,5 @@
 ---
-title: 'A Thread Map for FastAPI, Asyncio, and Blocking S3 Uploads'
+title: 'Demystifying Threading and Event Loop Models in Python'
 summary: 'Trace one S3 upload from a FastAPI request through an asyncio worker loop and a thread-pool call to boto3.'
 createdAt: 2026-09-08 12:31:45 +0800
 publishedAt: 2026-09-08
