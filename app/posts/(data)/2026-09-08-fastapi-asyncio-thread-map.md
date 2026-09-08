@@ -1,5 +1,5 @@
 ---
-title: 'A thread map for FastAPI, asyncio, and blocking S3 uploads'
+title: 'A Thread Map for FastAPI, Asyncio, and Blocking S3 Uploads'
 summary: 'Trace one S3 upload from a FastAPI request through an asyncio worker loop and a thread-pool call to boto3.'
 createdAt: 2026-09-08 12:31:45 +0800
 publishedAt: 2026-09-08
@@ -10,9 +10,7 @@ Had to read an upload path where one request crossed two event loops and then
 landed in a normal thread for `boto3`. The code was valid, but the names made
 it easy to blur together threads, event loops, tasks, and futures.
 
-The useful distinction is this: an event loop is not a thread. The
-[Python Software Foundation (2026a)](https://docs.python.org/3/library/asyncio-eventloop.html)
-describes the event loop as the core of an asyncio application. It runs tasks
+The useful distinction is this: an event loop is not a thread. It runs tasks
 and callbacks; it does not replace the OS thread that runs it.
 
 - A **thread** is an operating-system execution lane.
@@ -56,7 +54,7 @@ The upload route had three execution layers.
 └──────────────────────────────────────────────────────────────────────┘
 ```
 
-## The worker loop has a thread of its own
+## The Worker Loop Has a Thread of Its Own
 
 The worker is created before the server starts accepting uploads:
 
@@ -94,7 +92,7 @@ An event loop can switch between ready asyncio tasks when one reaches `await`.
 That is concurrency, not parallel execution of Python code on the same thread.
 The extra OS threads are what provide separate places for blocking work to run.
 
-## The request crosses to the worker loop
+## The Request Crosses to the Worker Loop
 
 The route schedules the uploader coroutine on the worker loop:
 
@@ -118,7 +116,7 @@ That is different from `asyncio.create_task()`, which schedules work on the
 currently running loop. Here the route explicitly wants another loop owned by
 another thread.
 
-## boto3 still blocks
+## Boto3 Still Blocks
 
 Inside the worker-loop coroutine, the S3 call is handed to an executor thread:
 
@@ -138,13 +136,10 @@ def blocking_s3_call(...) -> str:
     return response['ETag']
 ```
 
-`boto3` exposes `put_object()` as a regular client call
-([Amazon Web Services, n.d.](https://boto3.amazonaws.com/v1/documentation/api/latest/reference/services/s3/client/put_object.html)).
-Calling it directly from the coroutine would hold the worker event-loop thread
-until S3 replies. The [Python Software Foundation (2026b)](https://docs.python.org/3/library/asyncio-task.html#asyncio.to_thread)
-documents `asyncio.to_thread()` as the API for running a blocking function in a
-separate thread, so this code sends `blocking_s3_call()` to the loop's default
-`ThreadPoolExecutor`.
+`boto3` exposes `put_object()` as a regular client call. Calling it directly
+from the coroutine would hold the worker event-loop thread until S3 replies.
+`asyncio.to_thread()` runs a blocking function in a separate thread, so this
+code sends `blocking_s3_call()` to the loop's default `ThreadPoolExecutor`.
 
 The uploader task pauses at `await`; the worker loop can run another ready task;
 and an executor worker waits for S3. `to_thread()` does not make boto3 an async
@@ -153,7 +148,7 @@ client. It moves the blocking wait away from the event loop.
 The executor is a pool, not one permanent S3 thread. Multiple uploads may reuse
 workers or cause several workers to run, subject to the executor's capacity.
 
-## The result comes back to FastAPI
+## The Result Comes Back to FastAPI
 
 The route receives a `concurrent.futures.Future`, which belongs to the
 cross-thread API. FastAPI needs an awaitable attached to its own loop:
@@ -167,7 +162,7 @@ return {'etag': etag}
 FastAPI's event loop can serve other ready requests. When the uploader returns
 an ETag or raises, the HTTP route resumes.
 
-## This is not fire-and-forget
+## This Is Not Fire-and-Forget
 
 The request is non-blocking for FastAPI's event loop, but the client still waits
 for the upload to finish. The route cannot return until this completes:
@@ -180,7 +175,7 @@ That distinction matters for API design. A true background submission normally
 returns `202 Accepted` with a job ID, stores the work durably, and lets another
 worker process it after the HTTP response is gone.
 
-## The second loop is probably unnecessary here
+## The Second Loop Is Probably Unnecessary Here
 
 If the only reason for `S3AsyncWorkerThread` is to keep a blocking boto3 call
 off FastAPI's event loop, the route can use `to_thread()` directly:
@@ -210,7 +205,7 @@ A dedicated loop can still be justified when it owns a separate execution
 domain: a queue consumer, long-lived loop-local state, or scheduling that must
 not compete with request handling. Blocking boto3 alone is not enough reason.
 
-## Things that still need a decision
+## Things That Still Need a Decision
 
 - **Backpressure:** each request can add executor work. Bound concurrency with a
   semaphore, bounded executor, or queue before uploads pile up.
@@ -230,7 +225,8 @@ the extra machinery is easier to question.
 
 ## Refs
 
-- Amazon Web Services. (n.d.). [_put_object_](https://boto3.amazonaws.com/v1/documentation/api/latest/reference/services/s3/client/put_object.html).
-- FastAPI. (n.d.). [_Concurrency and async / await_](https://fastapi.tiangolo.com/async/).
-- Python Software Foundation. (2026a). [_Event loop_](https://docs.python.org/3/library/asyncio-eventloop.html). _Python 3.14.7 documentation_.
-- Python Software Foundation. (2026b). [_Coroutines and tasks_](https://docs.python.org/3/library/asyncio-task.html). _Python 3.14.7 documentation_.
+- [Python Event Loop Documentation](https://docs.python.org/3/library/asyncio-eventloop.html)
+- [Python `asyncio.to_thread`](https://docs.python.org/3/library/asyncio-task.html#asyncio.to_thread)
+- [Python `asyncio.run_coroutine_threadsafe`](https://docs.python.org/3/library/asyncio-task.html#asyncio.run_coroutine_threadsafe)
+- [Boto3 `put_object`](https://boto3.amazonaws.com/v1/documentation/api/latest/reference/services/s3/client/put_object.html)
+- [FastAPI Async Documentation](https://fastapi.tiangolo.com/async/)
