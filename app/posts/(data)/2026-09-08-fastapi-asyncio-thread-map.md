@@ -10,7 +10,10 @@ Had to read an upload path where one request crossed two event loops and then
 landed in a normal thread for `boto3`. The code was valid, but the names made
 it easy to blur together threads, event loops, tasks, and futures.
 
-The useful distinction is this: an event loop is not a thread.
+The useful distinction is this: an event loop is not a thread. The
+[Python Software Foundation (2026a)](https://docs.python.org/3/library/asyncio-eventloop.html)
+describes the event loop as the core of an asyncio application. It runs tasks
+and callbacks; it does not replace the OS thread that runs it.
 
 - A **thread** is an operating-system execution lane.
 - An **event loop** schedules callbacks and asyncio tasks on a thread.
@@ -135,9 +138,13 @@ def blocking_s3_call(...) -> str:
     return response['ETag']
 ```
 
-`boto3` is synchronous. Calling `put_object()` directly from the coroutine
-would hold the worker event-loop thread until S3 replies. `asyncio.to_thread()`
-runs `blocking_s3_call()` in the loop's default `ThreadPoolExecutor` instead.
+`boto3` exposes `put_object()` as a regular client call
+([Amazon Web Services, n.d.](https://boto3.amazonaws.com/v1/documentation/api/latest/reference/services/s3/client/put_object.html)).
+Calling it directly from the coroutine would hold the worker event-loop thread
+until S3 replies. The [Python Software Foundation (2026b)](https://docs.python.org/3/library/asyncio-task.html#asyncio.to_thread)
+documents `asyncio.to_thread()` as the API for running a blocking function in a
+separate thread, so this code sends `blocking_s3_call()` to the loop's default
+`ThreadPoolExecutor`.
 
 The uploader task pauses at `await`; the worker loop can run another ready task;
 and an executor worker waits for S3. `to_thread()` does not make boto3 an async
@@ -223,7 +230,7 @@ the extra machinery is easier to question.
 
 ## Refs
 
-- [Python event loop documentation](https://docs.python.org/3/library/asyncio-eventloop.html)
-- [Python `asyncio.to_thread`](https://docs.python.org/3/library/asyncio-task.html#asyncio.to_thread)
-- [Python `asyncio.run_coroutine_threadsafe`](https://docs.python.org/3/library/asyncio-task.html#asyncio.run_coroutine_threadsafe)
-- [FastAPI async documentation](https://fastapi.tiangolo.com/async/)
+- Amazon Web Services. (n.d.). [_put_object_](https://boto3.amazonaws.com/v1/documentation/api/latest/reference/services/s3/client/put_object.html).
+- FastAPI. (n.d.). [_Concurrency and async / await_](https://fastapi.tiangolo.com/async/).
+- Python Software Foundation. (2026a). [_Event loop_](https://docs.python.org/3/library/asyncio-eventloop.html). _Python 3.14.7 documentation_.
+- Python Software Foundation. (2026b). [_Coroutines and tasks_](https://docs.python.org/3/library/asyncio-task.html). _Python 3.14.7 documentation_.
