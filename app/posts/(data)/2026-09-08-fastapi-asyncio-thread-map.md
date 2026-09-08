@@ -35,20 +35,30 @@ The event loop is not a thread. It schedules asyncio tasks on a thread. A
 as the synchronous `boto3` client and its event iterator.
 
 ```text
-FastAPI / Uvicorn event-loop thread
+One Python process
 │
-├─ starts loop.run_in_executor(app_executor, pump_bedrock_stream, ...)
-│
-└─ awaits queue.get() and yields each text delta to StreamingResponse
-                         ▲
-                         │ run_coroutine_threadsafe(queue.put(text), loop)
-                         │
-ThreadPoolExecutor worker (bedrock-stream_0 ... bedrock-stream_N)
-│
-├─ response = bedrock_runtime.converse_stream(...)
-└─ for event in response['stream']:
-     read contentBlockDelta.delta.text
+├─ OS Thread A: FastAPI / Uvicorn
+│  │
+│  └─ the one asyncio event loop
+│     ├─ starts app_executor work with loop.run_in_executor(...)
+│     ├─ awaits queue.get()
+│     └─ yields each text delta to StreamingResponse
+│                            ▲
+│                            │ run_coroutine_threadsafe(queue.put(text), loop)
+│                            │
+└─ OS Thread B+: ThreadPoolExecutor worker
+   │
+   ├─ no asyncio event loop in this design
+   ├─ response = bedrock_runtime.converse_stream(...)
+   └─ for event in response['stream']:
+        read contentBlockDelta.delta.text
 ```
+
+This architecture has **one event loop and multiple OS threads**. The executor
+workers do not own another event loop; they only run synchronous Python code.
+A second event loop would require explicit code such as
+`asyncio.new_event_loop()` plus `run_forever()` in another thread, which this
+example does not do.
 
 The executor thread blocks while it waits for Bedrock. The FastAPI event-loop
 thread does not. It waits asynchronously for queue items and can still run
