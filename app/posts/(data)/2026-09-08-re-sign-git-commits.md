@@ -61,6 +61,37 @@ git log --oneline origin/main..HEAD
 This form is for a linear branch. Review merge-heavy history separately before
 rewriting it; a normal rebase can change its shape.
 
+## Bonus: Reset the Author
+
+Re-signing preserves the original author. If the author identity is also wrong,
+add `--reset-author` while amending:
+
+```bash
+git commit --amend --no-edit --reset-author -S
+```
+
+Git then sets the author to the current committer identity from `user.name` and
+`user.email`, and renews the author timestamp. Check those values first:
+
+```bash
+git config user.name
+git config user.email
+```
+
+To reset the author and re-sign every commit in a linear branch range:
+
+```bash
+git fetch origin
+git rebase --exec 'git commit --amend --no-edit --no-verify --reset-author -S' origin/main
+```
+
+This is not cosmetic. It replaces both the commit signature and the recorded
+author identity. Confirm the result before force-pushing:
+
+```bash
+git show --no-patch --format=fuller HEAD
+```
+
 ## Verify Before Pushing
 
 Inspect the signatures in the rewritten branch range:
