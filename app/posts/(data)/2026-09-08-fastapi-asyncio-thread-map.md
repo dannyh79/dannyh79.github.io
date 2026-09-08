@@ -281,6 +281,24 @@ app_executor.shutdown(wait=True, cancel_futures=True)
 `cancel_futures=True` cancels work that has not started. It cannot stop a stream
 already inside the synchronous Boto3 iterator.
 
+### Production Boundary
+
+The code above validates the thread-to-event-loop handoff. It is not a complete
+production streaming adapter.
+
+- If `pump_bedrock_stream()` raises, its `finally` block still puts `END` on the
+  queue and `await producer` re-raises the original exception. A production
+  route should carry a typed error item through the queue and map it to its
+  streaming error protocol.
+- If an HTTP client disconnects while the bounded queue is full, the producer
+  can remain blocked waiting for the event loop to accept another item. Add a
+  disconnect and timeout path that stops the Bedrock stream through the client
+  interface your Boto3 version supports.
+- Python's documentation cautions against using `ThreadPoolExecutor` for
+  long-running tasks because interpreter shutdown joins its threads. Keep model
+  streams bounded by request timeouts; move durable or unbounded workloads to a
+  queue-backed worker system.
+
 The important boundary is small: FastAPI owns async HTTP work; the dedicated
 executor owns blocking Bedrock streams; the queue moves deltas between them.
 That is enough to reason about concurrency, backpressure, and thread limits
@@ -290,6 +308,7 @@ without adding a second event loop.
 
 - [Boto3 `converse_stream`](https://boto3.amazonaws.com/v1/documentation/api/latest/reference/services/bedrock-runtime/client/converse_stream.html)
 - [Amazon Bedrock Converse API](https://docs.aws.amazon.com/bedrock/latest/userguide/conversation-inference.html)
+- [Python `ThreadPoolExecutor`](https://docs.python.org/3/library/concurrent.futures.html#concurrent.futures.ThreadPoolExecutor)
 - [Python `asyncio.run_in_executor`](https://docs.python.org/3/library/asyncio-eventloop.html#asyncio.loop.run_in_executor)
 - [Python `asyncio.run_coroutine_threadsafe`](https://docs.python.org/3/library/asyncio-task.html#asyncio.run_coroutine_threadsafe)
 - [FastAPI `StreamingResponse`](https://fastapi.tiangolo.com/advanced/custom-response/#streamingresponse)
