@@ -1,62 +1,63 @@
 ---
 title: 'A thread map for FastAPI, asyncio, and blocking S3 uploads'
-summary: 'Follow one upload request across FastAPI’s event loop, a dedicated asyncio worker loop, and the threads that run blocking boto3 calls.'
+summary: 'Trace one S3 upload from a FastAPI request through an asyncio worker loop and a thread-pool call to boto3.'
 createdAt: 2026-09-08 12:31:45 +0800
 publishedAt: 2026-09-08
 categories: [python, fastapi, asyncio, aws]
 ---
 
-I was reading an upload endpoint that looked roughly like this:
+Had to read an upload path where one request crossed two event loops and then
+landed in a normal thread for `boto3`. The code was valid, but the names made
+it easy to blur together threads, event loops, tasks, and futures.
+
+The useful distinction is this: an event loop is not a thread.
+
+- A **thread** is an operating-system execution lane.
+- An **event loop** schedules callbacks and asyncio tasks on a thread.
+- A **task** is a coroutine scheduled by an event loop.
+- A **future** represents a result that will arrive later.
+
+The upload route had three execution layers.
+
+```text
+                           one Python process
+
+┌──────────────────────────────────────────────────────────────────────┐
+│ FastAPI / Uvicorn event-loop thread                                  │
+│                                                                      │
+│  upload_document(payload)                                            │
+│       │                                                              │
+│       ├─ run_coroutine_threadsafe(coro, aws_worker.loop) ───────────┐│
+│       └─ await wrap_future(future)                                  ││
+│          The request waits without blocking FastAPI's event loop.   ││
+└──────────────────────────────────────────────────────────────────────┘│
+                                                                         │
+                                                                         ▼
+┌──────────────────────────────────────────────────────────────────────┐
+│ S3AsyncWorkerThread                                                   │
+│                                                                      │
+│  aws_worker.loop                                                      │
+│       └─ async_s3_uploader_task(...)                                  │
+│            └─ await asyncio.to_thread(blocking_s3_call, ...) ──────┐│
+└──────────────────────────────────────────────────────────────────────┘│
+                                                                         │
+                                                                         ▼
+┌──────────────────────────────────────────────────────────────────────┐
+│ Default ThreadPoolExecutor worker(s)                                  │
+│                                                                      │
+│  blocking_s3_call(...)                                                │
+│       └─ s3_client.put_object(...)                                    │
+│          Waits for the network and S3 response.                      │
+│                                                                      │
+│  ETag or error ───────► worker-loop task ───────► HTTP route         │
+└──────────────────────────────────────────────────────────────────────┘
+```
+
+## The worker loop has a thread of its own
+
+The worker is created before the server starts accepting uploads:
 
 ```python
-import asyncio
-import threading
-from concurrent.futures import Future
-
-from boto3 import client as boto3_client
-from botocore.exceptions import ClientError
-from fastapi import FastAPI, HTTPException, status
-from pydantic import BaseModel
-
-app = FastAPI()
-s3_client = boto3_client('s3')
-
-
-class S3UploadPayload(BaseModel):
-    bucket: str
-    key: str
-    content: bytes
-    content_type: str
-
-
-def blocking_s3_call(bucket: str, key: str, data: bytes, content_type: str) -> str:
-    response = s3_client.put_object(
-        Bucket=bucket,
-        Key=key,
-        Body=data,
-        ContentType=content_type,
-    )
-    return response['ETag']
-
-
-async def async_s3_uploader_task(
-    bucket: str,
-    key: str,
-    data: bytes,
-    content_type: str,
-) -> str:
-    try:
-        return await asyncio.to_thread(
-            blocking_s3_call,
-            bucket,
-            key,
-            data,
-            content_type,
-        )
-    except ClientError as error:
-        raise RuntimeError(f'S3 upload failed: {error}') from error
-
-
 class BackgroundLoopWorker:
     def __init__(self) -> None:
         self.loop = asyncio.new_event_loop()
@@ -66,152 +67,116 @@ class BackgroundLoopWorker:
             daemon=True,
         )
 
-    def start(self) -> None:
-        self.thread.start()
-
     def _run_loop_forever(self) -> None:
         asyncio.set_event_loop(self.loop)
         self.loop.run_forever()
-
-
-aws_worker = BackgroundLoopWorker()
-aws_worker.start()
-
-
-@app.post('/upload', status_code=status.HTTP_201_CREATED)
-async def upload_document(payload: S3UploadPayload) -> dict[str, str]:
-    future: Future[str] = asyncio.run_coroutine_threadsafe(
-        async_s3_uploader_task(
-            payload.bucket,
-            payload.key,
-            payload.content,
-            payload.content_type,
-        ),
-        aws_worker.loop,
-    )
-
-    try:
-        etag = await asyncio.wrap_future(future)
-    except RuntimeError as error:
-        raise HTTPException(status_code=500, detail=str(error)) from error
-
-    return {'etag': etag}
 ```
 
-There is enough concurrency vocabulary in this example to make it feel more complicated than it is. The useful starting point is that an event loop is not a thread.
+`asyncio.new_event_loop()` creates a loop object. Nothing is running yet.
+`threading.Thread(...)` creates the OS thread. When that thread starts,
+`set_event_loop()` makes the loop current in that thread and `run_forever()`
+starts processing work submitted to it.
 
-A thread is an operating-system execution lane. An asyncio event loop is a Python scheduler that runs callbacks and coroutine tasks on one thread at a time. Tasks can interleave when one reaches `await` and yields, but the event loop does not run those Python tasks in parallel on a single thread.
-
-## The thread map
-
-One request touches three places:
+At that point the process has two loops on two separate threads:
 
 ```text
-                           one Python process
+FastAPI / Uvicorn thread
+└─ FastAPI event loop
 
-┌──────────────────────────────────────────────────────────────────────┐
-│ Thread 1: FastAPI / Uvicorn thread                                    │
-│                                                                      │
-│  FastAPI event loop                                                   │
-│                                                                      │
-│  upload_document(payload)                                            │
-│       │                                                              │
-│       ├─ asyncio.run_coroutine_threadsafe(coro, aws_worker.loop) ───┐│
-│       │                                                              ││
-│       ├─ receives concurrent.futures.Future immediately             ││
-│       │                                                              ││
-│       └─ await asyncio.wrap_future(future)                           ││
-│          The request coroutine waits without blocking this loop.     ││
-└──────────────────────────────────────────────────────────────────────┘│
-                                                                         │
-                                                                         ▼
-┌──────────────────────────────────────────────────────────────────────┐
-│ Thread 2: S3AsyncWorkerThread                                         │
-│                                                                      │
-│  aws_worker.loop                                                      │
-│                                                                      │
-│  loop.run_forever()                                                   │
-│       │                                                              │
-│       └─ async_s3_uploader_task(...)                                  │
-│            │                                                         │
-│            └─ await asyncio.to_thread(blocking_s3_call, ...) ──────┐│
-│               This coroutine yields while the S3 call runs elsewhere.││
-└──────────────────────────────────────────────────────────────────────┘│
-                                                                         │
-                                                                         ▼
-┌──────────────────────────────────────────────────────────────────────┐
-│ Thread 3 and beyond: ThreadPoolExecutor workers                       │
-│                                                                      │
-│  blocking_s3_call(...)                                                │
-│       │                                                              │
-│       └─ s3_client.put_object(...)                                    │
-│          Blocks while it waits for the network and S3.               │
-│                                                                      │
-│  ETag or exception ───────► worker-loop task ───────► HTTP route     │
-└──────────────────────────────────────────────────────────────────────┘
+S3AsyncWorkerThread
+└─ aws_worker.loop
 ```
 
-`Thread 3 and beyond` is a pool, not one permanent S3 thread. `asyncio.to_thread()` submits work to the event loop's default `ThreadPoolExecutor`, which may reuse existing workers or run several calls concurrently.
+An event loop can switch between ready asyncio tasks when one reaches `await`.
+That is concurrency, not parallel execution of Python code on the same thread.
+The extra OS threads are what provide separate places for blocking work to run.
 
-## What each handoff does
+## The request crosses to the worker loop
 
-### `run_coroutine_threadsafe()` moves work to another loop
-
-The FastAPI route runs on FastAPI's event loop. This line submits a coroutine to the loop running in `S3AsyncWorkerThread`:
+The route schedules the uploader coroutine on the worker loop:
 
 ```python
-future = asyncio.run_coroutine_threadsafe(coro, aws_worker.loop)
+future = asyncio.run_coroutine_threadsafe(
+    async_s3_uploader_task(
+        payload.bucket,
+        payload.key,
+        payload.content,
+        payload.content_type,
+    ),
+    aws_worker.loop,
+)
 ```
 
-It does not execute the coroutine in the FastAPI thread. It returns a `concurrent.futures.Future`, which represents work happening in another thread.
+`asyncio.run_coroutine_threadsafe()` is the cross-thread handoff. It does not
+run the uploader in FastAPI's thread. It gives the worker loop a coroutine to
+schedule and returns a `concurrent.futures.Future` immediately.
 
-That cross-thread part matters. `asyncio.create_task()` would create a task on the current loop. `run_coroutine_threadsafe()` is specifically for safely scheduling work from one thread onto an event loop owned by another.
+That is different from `asyncio.create_task()`, which schedules work on the
+currently running loop. Here the route explicitly wants another loop owned by
+another thread.
 
-### `asyncio.to_thread()` keeps blocking boto3 out of the event loop
+## boto3 still blocks
 
-`boto3` is synchronous. During this call:
+Inside the worker-loop coroutine, the S3 call is handed to an executor thread:
 
 ```python
-s3_client.put_object(...)
+async def async_s3_uploader_task(...) -> str:
+    return await asyncio.to_thread(
+        blocking_s3_call,
+        bucket,
+        key,
+        data,
+        content_type,
+    )
+
+
+def blocking_s3_call(...) -> str:
+    response = s3_client.put_object(...)
+    return response['ETag']
 ```
 
-the thread that calls it waits for the network request to complete. Calling it directly inside `async_s3_uploader_task()` would block the worker event loop and prevent it from running any other ready task.
+`boto3` is synchronous. Calling `put_object()` directly from the coroutine
+would hold the worker event-loop thread until S3 replies. `asyncio.to_thread()`
+runs `blocking_s3_call()` in the loop's default `ThreadPoolExecutor` instead.
 
-This is why the coroutine uses:
+The uploader task pauses at `await`; the worker loop can run another ready task;
+and an executor worker waits for S3. `to_thread()` does not make boto3 an async
+client. It moves the blocking wait away from the event loop.
 
-```python
-etag = await asyncio.to_thread(blocking_s3_call, ...)
-```
+The executor is a pool, not one permanent S3 thread. Multiple uploads may reuse
+workers or cause several workers to run, subject to the executor's capacity.
 
-`to_thread()` runs the regular blocking function in an executor worker. The coroutine pauses at `await`, freeing the worker event loop to run other ready coroutines. It does not turn boto3 into an async client. It just puts the blocking wait in a thread where it cannot stall the event loop.
+## The result comes back to FastAPI
 
-### `wrap_future()` brings the result back to FastAPI
-
-The route receives a `concurrent.futures.Future`, not the asyncio future type attached to FastAPI's loop. `asyncio.wrap_future()` bridges the two:
+The route receives a `concurrent.futures.Future`, which belongs to the
+cross-thread API. FastAPI needs an awaitable attached to its own loop:
 
 ```python
 etag = await asyncio.wrap_future(future)
+return {'etag': etag}
 ```
 
-While that await is pending, FastAPI's event loop can handle other requests. Once the S3 task resolves or raises, the route resumes and returns its response.
+`asyncio.wrap_future()` provides that bridge. While the request coroutine waits,
+FastAPI's event loop can serve other ready requests. When the uploader returns
+an ETag or raises, the HTTP route resumes.
 
 ## This is not fire-and-forget
 
-The code is asynchronous from the web server's perspective because it does not block FastAPI's event-loop thread while S3 is running. The HTTP client still waits for the upload to finish, though.
-
-The response only happens after this line completes:
+The request is non-blocking for FastAPI's event loop, but the client still waits
+for the upload to finish. The route cannot return until this completes:
 
 ```python
 etag = await asyncio.wrap_future(future)
 ```
 
-Calling this endpoint "background" can be misleading. It is an async request that waits for confirmed completion. A real submit-and-return workflow would usually return `202 Accepted` with a job ID, then store and process the upload through durable infrastructure.
+That distinction matters for API design. A true background submission normally
+returns `202 Accepted` with a job ID, stores the work durably, and lets another
+worker process it after the HTTP response is gone.
 
-## Is the dedicated worker loop necessary?
+## The second loop is probably unnecessary here
 
-Probably not for this endpoint.
-
-If the only goal is to keep a blocking boto3 call off FastAPI's loop, the route can use `to_thread()` directly:
+If the only reason for `S3AsyncWorkerThread` is to keep a blocking boto3 call
+off FastAPI's event loop, the route can use `to_thread()` directly:
 
 ```python
 @app.post('/upload', status_code=status.HTTP_201_CREATED)
@@ -230,24 +195,35 @@ async def upload_document(payload: S3UploadPayload) -> dict[str, str]:
     return {'etag': etag}
 ```
 
-That version has one event loop, FastAPI's, plus executor workers for the blocking S3 calls. There is no extra thread, no second event loop, and no cross-thread future to bridge.
+This version keeps FastAPI responsive during the blocking call without adding a
+second event loop, an extra thread, or a cross-thread future. I would start
+there.
 
-A dedicated loop can still make sense when it owns a real execution domain: a queue consumer, isolated loop-wide state, a specialised client lifecycle, or scheduling that should be separate from web requests. It is not needed merely because a library is blocking.
+A dedicated loop can still be justified when it owns a separate execution
+domain: a queue consumer, long-lived loop-local state, or scheduling that must
+not compete with request handling. Blocking boto3 alone is not enough reason.
 
-## Edges worth deciding deliberately
+## Things that still need a decision
 
-The simple diagram leaves out the production details that usually cause trouble:
+- **Backpressure:** each request can add executor work. Bound concurrency with a
+  semaphore, bounded executor, or queue before uploads pile up.
+- **Cancellation:** cancelling the HTTP request can cancel the asyncio wait. It
+  does not reliably stop a synchronous boto3 call already running in a thread.
+  Set sensible network timeouts.
+- **Shutdown:** stopping a loop is not a full shutdown plan. Stop accepting new
+  work, await or cancel outstanding tasks, shut down the executor, then close
+  the loop.
+- **Errors:** preserve the S3 exception and return an upload failure, not a
+  generic scheduling error.
 
-- **Backpressure:** each request can add executor work. Under load, use a semaphore, bounded executor, or queue so uploads cannot pile up without limit.
-- **Cancellation:** cancelling the HTTP request can cancel the asyncio wait, but it will not reliably stop a thread already inside a synchronous boto3 request. Timeouts are still important.
-- **Shutdown:** `loop.stop()` alone can abandon pending tasks. Stop taking work, then wait for or cancel outstanding tasks, shut down the executor, and close the loop.
-- **Failures:** preserve the original exception and make the HTTP response reflect an upload failure, not a vague scheduling failure.
+The thread map is enough to reason about the path: FastAPI submits to the
+worker loop; the worker loop submits blocking boto3 work to an executor; the
+result travels back through the two futures. Once those boundaries are clear,
+the extra machinery is easier to question.
 
-The main mental model is small enough to remember: event loops schedule async tasks on threads; threads run blocking work when the code cannot yield. Once those are separated, the arrows in the upload path stop being mysterious.
+## Refs
 
-## References
-
-- [Python asyncio event loop documentation](https://docs.python.org/3/library/asyncio-eventloop.html)
+- [Python event loop documentation](https://docs.python.org/3/library/asyncio-eventloop.html)
 - [Python `asyncio.to_thread`](https://docs.python.org/3/library/asyncio-task.html#asyncio.to_thread)
 - [Python `asyncio.run_coroutine_threadsafe`](https://docs.python.org/3/library/asyncio-task.html#asyncio.run_coroutine_threadsafe)
 - [FastAPI async documentation](https://fastapi.tiangolo.com/async/)
