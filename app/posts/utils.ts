@@ -1,8 +1,7 @@
 import fs from 'fs';
 import matter from 'gray-matter';
 import path from 'path';
-// @ts-expect-error - avoid adding @types/js-yaml devDependency
-import yaml from 'js-yaml';
+import { load } from 'js-yaml';
 
 type Metadata = {
   title: string;
@@ -25,7 +24,7 @@ function getMDXData(dir: fs.PathLike) {
   return files.map((file) => {
     const { data, content } = matter.read(path.join(dir.toString(), file), {
       engines: {
-        yaml: (input: string) => yaml.load(input),
+        yaml: (input: string) => load(input) as object,
       },
     });
     const filename = path.basename(file, path.extname(file));
