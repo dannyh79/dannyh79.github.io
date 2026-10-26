@@ -14,7 +14,7 @@ on:
 
 env:
   CI: true
-  NODE_VERSION: 24.x
+  NODE_VERSION: 26.x
   E2E_DEVICES: '["chrome"]'
 
 jobs:
