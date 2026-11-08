@@ -6,7 +6,8 @@ minimumReleaseAge: 10080
 overrides:
   esbuild: ^0.28.1
   "minimatch@3>brace-expansion": 1.1.21
-  "minimatch@10>brace-expansion": 5.0.12
+  # CVE-2026-118764: remove once typescript-estree depends on a patched minimatch.
+  "@typescript-eslint/typescript-estree>minimatch": ^11.0.1
   "next>postcss": ^8.5.23
   "@tailwindcss/postcss>postcss": ^8.5.23
   "next>sharp": 0.35.5
