@@ -12,6 +12,10 @@ on:
       - 'docs/**'
       - '**/*.mdx?'
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 env:
   CI: true
   NODE_VERSION: 26.x
