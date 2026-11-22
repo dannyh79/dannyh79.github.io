@@ -14,11 +14,11 @@ permissions:
   pages: write
   id-token: write
 
-# Queue deployments instead of cancelling pending runs.
+# Finish the current deployment and keep only the latest queued run.
 concurrency:
   group: pages
   cancel-in-progress: false
-  queue: max
+  queue: single
 
 env:
   NODE_VERSION: 26.x
