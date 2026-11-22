@@ -14,10 +14,11 @@ permissions:
   pages: write
   id-token: write
 
-# Allow only one concurrent deployment, skipping runs queued between the run in-progress and latest queued.
+# Queue deployments instead of cancelling pending runs.
 concurrency:
   group: pages
   cancel-in-progress: false
+  queue: max
 
 env:
   NODE_VERSION: 26.x
